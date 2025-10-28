@@ -124,6 +124,120 @@ Figma：(https://www.figma.com/design/1gMjHohHXT7aGgkNVTZqO4/DartsEvents?node-id
 - [x] 地図表示機能
 - [x] 通知機能
 
+### テーブル詳細
+#### users（ユーザー情報）
+- id : bigint / 主キー
+- name : string / ユーザー名
+- email : string / ログイン用メールアドレス（ユニーク）
+- password_digest : string / パスワードハッシュ
+- shop_owner : boolean / 店舗オーナーフラグ
+- pro_player : boolean / プロプレイヤーフラグ
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### players（プレイヤー情報）
+- id : bigint / 主キー
+- user_id : bigint / 関連ユーザーID（外部キー）
+- name : string / プレイヤー名
+- bio : text / 自己紹介文
+- image : string / プロフィール画像URL
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### shops（店舗情報）
+- id : bigint / 主キー
+- user_id : bigint / オーナーユーザーID（外部キー）
+- name : string / 店舗名
+- description : text / 店舗説明文
+- address : string / 住所（番地含む）
+- prefecture : string / 都道府県
+- city : string / 市区町村
+- postal_code : string / 郵便番号
+- phone_number : string / 電話番号
+- latitude : decimal / 緯度
+- longitude : decimal / 経度
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### shop_images（店舗画像）
+- id : bigint / 主キー
+- shop_id : bigint / 店舗ID（外部キー）
+- image : string / 画像パス
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### events（イベント情報）
+- id : bigint / 主キー
+- organizer_type : string / 主催者タイプ（Shop / Player）
+- organizer_id : bigint / 主催者ID
+- title : string / イベントタイトル
+- description : string / イベント詳細説明
+- start_datetime : datetime / 開始日時
+- end_datetime : datetime / 終了日時
+- location : string / 開催場所（店舗名など）
+- address : string / 住所
+- prefecture : string / 都道府県
+- city : string / 市区町村
+- latitude : decimal / 緯度
+- longitude : decimal / 経度
+- fee : integer / 参加費
+- capacity : integer / 定員
+- entry_deadline : datetime / 申し込み締切日
+- status : integer / ステータス（開催中・終了など）
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### event_images（イベント画像）
+- id : bigint / 主キー
+- event_id : bigint / イベントID（外部キー）
+- image : string / 画像パス
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### categories（カテゴリー）
+- id : bigint / 主キー
+- name : string / カテゴリ名（例：トーナメント・交流戦など）
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### event_categories（イベント×カテゴリ中間テーブル）
+- id : bigint / 主キー
+- event_id : bigint / イベントID（外部キー）
+- category_id : bigint / カテゴリID（外部キー）
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### favorites（お気に入り情報）
+- id : bigint / 主キー
+- user_id : bigint / ユーザーID（外部キー）
+- favorite_type : string / お気に入り対象タイプ（Shop / Event / Player）
+- favorite_id : bigint / 対象ID
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### notifications（通知履歴）
+- id : bigint / 主キー
+- user_id : bigint / 通知対象ユーザーID（外部キー）
+- title : string / 通知タイトル
+- message : text / 通知メッセージ内容
+- notification_type : string / 通知タイプ（例：イベント開催・お気に入り更新など）
+- read : boolean / 既読フラグ
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### notification_settings（通知設定）
+- id : bigint / 主キー
+- user_id : bigint / ユーザーID（外部キー）
+- line_user_id : string / LINEユーザーID
+- line_connected : boolean / LINE連携済みフラグ
+- new_event_from_favorite : boolean / お気に入りからの新イベント通知
+- event_reminder : boolean / イベント前リマインダー
+- early_deadline_reminder : boolean / 締切前リマインダー
+- push_enabled : boolean / プッシュ通知ON/OFF
+- email_enabled : boolean / メール通知ON/OFF
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
 ### ER図の注意点
 - [x] プルリクエストに最新のER図のスクリーンショットを画像が表示される形で掲載できているか？
 - [x] テーブル名は複数形になっているか？
