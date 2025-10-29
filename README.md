@@ -101,29 +101,148 @@ gem 'kaminari' # ページネーション
 ### 画面遷移図
 Figma：(https://www.figma.com/design/1gMjHohHXT7aGgkNVTZqO4/DartsEvents?node-id=0-1&p=f&t=Hq9wKqhQxxX9gFb9-0)
 
-### READMEに記載した機能
-- [ ] ユーザー登録機能
-- [ ] ログイン機能
-- [ ] パスワード変更機能
-- [ ] メールアドレス変更機能
-- [ ] イベント投稿機能（画像投稿含む）(オーナー,プロアカウントのみ)
-- [ ] イベント閲覧機能（未ログインでも閲覧可能）
-- [ ] イベント編集機能
-- [ ] イベント削除機能
-- [ ] お気に入り店舗,プレイヤー機能
-- [ ] お気に入り解除機能
-- [ ] イベント名,店舗名,プレイヤー名検索機能
-- [ ] 詳細検索機能
-- [ ] イベント情報のURL共有機能
+### ER図
+[![Image from Gyazo](https://i.gyazo.com/817d7ce6a060f1df6783dc8fb40966b1.png)](https://gyazo.com/817d7ce6a060f1df6783dc8fb40966b1)
 
-### 未ログインでも閲覧または利用できるページ
-以下の項目は適切に未ログインでも閲覧または利用できる画面遷移になっているか？
-- [ ] イベント閲覧機能（未ログインでも閲覧可能）
-- [ ] イベント名,店舗名,プレイヤー名検索機能
-- [ ] 詳細検索機能
-- [ ] イベント情報のURL共有機能
+### 本サービスの概要（700文字以内）
+このサービスは、ダーツイベント情報を一元管理・共有できるWebアプリです。
+ユーザーは自分の立場に応じて使い方が変わります。一般ユーザーはイベント情報を閲覧でき、プロプレイヤーは自身のプロフィールや参加予定イベントを発信できます。店舗オーナーは自店で開催する大会や交流会を登録し、写真やカテゴリーを添えて魅力的に告知できます。イベントは複数のカテゴリー（例：ハウストーナメント、交流戦など）や画像を紐づけることができ、検索・絞り込みも容易です。
+また、通知機能により「お気に入りプレイヤーがイベントに参加」「近くで新イベントが開催」などをリアルタイムで受け取れます。通知はLINE連携やメール、アプリ内通知など柔軟に設定可能。さらに位置情報を活用し、近隣イベントの自動リコメンドにも対応。
+「行きたかったイベントを見逃さない」をコンセプトに、ダーツファン・プレイヤー・ショップをつなぐアプリを目指しています。
 
-### メールアドレス・パスワード変更確認項目
-直接変更できるものではなく、一旦メールなどを介して専用のページで変更する画面遷移になっているか？
-- [ ] メールアドレス
-- [ ] パスワード
+### MVPで実装する予定の機能
+- [x] ユーザー登録機能
+- [x] ログイン機能
+- [x] イベント投稿機能
+- [x] 画像表示機能
+- [x] イベント検索機能
+- [x] イベント閲覧機能（未ログインでも閲覧可能）
+- [x] イベント編集機能
+- [x] イベント削除機能
+- [x] プロプレイヤーお気に入り登録機能
+- [x] 店舗お気に入り登録機能
+- [x] 地図表示機能
+- [x] 通知機能
+
+### テーブル詳細
+#### users（ユーザー情報）
+- id : bigint / 主キー
+- name : string / ユーザー名
+- email : string / ログイン用メールアドレス（ユニーク）
+- password_digest : string / パスワードハッシュ
+- shop_owner : boolean / 店舗オーナーフラグ
+- pro_player : boolean / プロプレイヤーフラグ
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### players（プレイヤー情報）
+- id : bigint / 主キー
+- user_id : bigint / 関連ユーザーID（外部キー）
+- name : string / プレイヤー名
+- bio : text / 自己紹介文
+- image : string / プロフィール画像URL
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### shops（店舗情報）
+- id : bigint / 主キー
+- user_id : bigint / オーナーユーザーID（外部キー）
+- name : string / 店舗名
+- description : text / 店舗説明文
+- address : string / 住所（番地含む）
+- prefecture : string / 都道府県
+- city : string / 市区町村
+- postal_code : string / 郵便番号
+- phone_number : string / 電話番号
+- latitude : decimal / 緯度
+- longitude : decimal / 経度
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### shop_images（店舗画像）
+- id : bigint / 主キー
+- shop_id : bigint / 店舗ID（外部キー）
+- image : string / 画像パス
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### events（イベント情報）
+- id : bigint / 主キー
+- organizer_type : string / 主催者タイプ（Shop / Player）
+- organizer_id : bigint / 主催者ID
+- title : string / イベントタイトル
+- description : string / イベント詳細説明
+- start_datetime : datetime / 開始日時
+- end_datetime : datetime / 終了日時
+- location : string / 開催場所（店舗名など）
+- address : string / 住所
+- prefecture : string / 都道府県
+- city : string / 市区町村
+- latitude : decimal / 緯度
+- longitude : decimal / 経度
+- fee : integer / 参加費
+- capacity : integer / 定員
+- entry_deadline : datetime / 申し込み締切日
+- status : integer / ステータス（開催中・終了など）
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### event_images（イベント画像）
+- id : bigint / 主キー
+- event_id : bigint / イベントID（外部キー）
+- image : string / 画像パス
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### categories（カテゴリー）
+- id : bigint / 主キー
+- name : string / カテゴリ名（例：トーナメント・交流戦など）
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### event_categories（イベント×カテゴリ中間テーブル）
+- id : bigint / 主キー
+- event_id : bigint / イベントID（外部キー）
+- category_id : bigint / カテゴリID（外部キー）
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### favorites（お気に入り情報）
+- id : bigint / 主キー
+- user_id : bigint / ユーザーID（外部キー）
+- favorite_type : string / お気に入り対象タイプ（Shop / Event / Player）
+- favorite_id : bigint / 対象ID
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### notifications（通知履歴）
+- id : bigint / 主キー
+- user_id : bigint / 通知対象ユーザーID（外部キー）
+- title : string / 通知タイトル
+- message : text / 通知メッセージ内容
+- notification_type : string / 通知タイプ（例：イベント開催・お気に入り更新など）
+- read : boolean / 既読フラグ
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+#### notification_settings（通知設定）
+- id : bigint / 主キー
+- user_id : bigint / ユーザーID（外部キー）
+- line_user_id : string / LINEユーザーID
+- line_connected : boolean / LINE連携済みフラグ
+- new_event_from_favorite : boolean / お気に入りからの新イベント通知
+- event_reminder : boolean / イベント前リマインダー
+- early_deadline_reminder : boolean / 締切前リマインダー
+- push_enabled : boolean / プッシュ通知ON/OFF
+- email_enabled : boolean / メール通知ON/OFF
+- created_at : datetime / 作成日時
+- updated_at : datetime / 更新日時
+
+### ER図の注意点
+- [x] プルリクエストに最新のER図のスクリーンショットを画像が表示される形で掲載できているか？
+- [x] テーブル名は複数形になっているか？
+- [x] カラムの型は記載されているか？
+- [x] 外部キーは適切に設けられているか？
+- [x] リレーションは適切に描かれているか？多対多の関係は存在しないか？
+- [x] STIは使用しないER図になっているか？
+- [x] Postsテーブルにpost_nameのように"テーブル名+カラム名"を付けていないか？
