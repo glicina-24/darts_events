@@ -1,9 +1,9 @@
 class User < ApplicationRecord
-  has_secure_password
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
 
-  validates :name,  presence: true
-  validates :email, presence: true,
-            uniqueness: true,
-            format: { with: URI::MailTo::EMAIL_REGEXP },
-            length: { maximum: 255 }
+  validates :name, presence: true
+
+  scope :shop_owners, -> { where(shop_owner: true) }
+  scope :pro_players, -> { where(pro_player: true) }
 end
