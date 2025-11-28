@@ -1,29 +1,166 @@
-<h2>Sign up</h2>
+<%# app/views/devise/registrations/new.html.erb %>
+<div class="min-h-screen flex flex-col bg-slate-100"
+     data-controller="account-type">
+  <!-- ヘッダー -->
+  <header class="w-full bg-white border-b">
+    <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center text-xs font-bold">
+          ロゴ
+        </div>
+        <span class="text-sm font-semibold tracking-wide">Darts Events</span>
+      </div>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+      <% if user_signed_in? %>
+        <%= link_to "マイページ", root_path,
+              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50" %>
+      <% else %>
+        <%= link_to "ログイン", new_user_session_path,
+              class: "inline-flex items-center rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white hover:bg-slate-800" %>
+      <% end %>
+    </div>
+  </header>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+  <!-- メイン -->
+  <main class="flex-1">
+    <div class="max-w-3xl mx-auto px-4 py-10">
+      <!-- タイトル -->
+      <h1 class="text-center text-3xl font-bold mb-2">新規登録</h1>
+      <p class="text-center text-slate-500 mb-8">
+        アカウントタイプを選択して登録してください
+      </p>
 
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
+      <!-- アカウントタイプタブ（見た目だけ・今はプロ選択状態） -->
+      <div class="mb-6 flex justify-center">
+        <div class="inline-flex bg-slate-200 rounded-full p-1 text-xs sm:text-sm">
+          <button type="button"
+                  data-account-type-target="tab"
+                  data-role="general"
+                  data-action="click->account-type#change"
+                  class="px-5 py-2 rounded-full text-slate-600 hover:bg-white/60">
+            一般ユーザー
+          </button>
+          <button type="button"
+                  data-account-type-target="tab"
+                  data-role="shop_owner"
+                  data-action="click->account-type#change"
+                  class="px-5 py-2 rounded-full text-slate-600 hover:bg-white/60">
+            店舗オーナー
+          </button>
+          <button type="button"
+                  data-account-type-target="tab"
+                  data-role="pro_player"
+                  data-action="click->account-type#change"
+                  class="px-5 py-2 rounded-full text-slate-600 hover:bg-white/60">
+            プロプレイヤー
+          </button>
+        </div>
+      </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
+      <!-- フォームカード -->
+      <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
+        <h2 class="text-lg font-semibold mb-1"
+            data-account-type-target="title">
+          プロプレイヤー登録
+        </h2>
+        <p class="text-sm text-slate-500 mb-6"
+          data-account-type-target="description">
+          基本情報を入力してアカウントを作成します
+        </p>
 
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
+        <%# エラーメッセージ %>
+        <% if resource.errors.any? %>
+          <div class="mb-4 rounded-md bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+            <p class="font-semibold mb-1">入力内容にエラーがあります。</p>
+            <ul class="list-disc list-inside">
+              <% resource.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
 
-<%= render "devise/shared/links" %>
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+          <div class="space-y-4">
+            <!-- ユーザー名 -->
+            <div>
+              <%= f.label :name, "ユーザー名", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.text_field :name,
+                    autofocus: true,
+                    placeholder: "ユーザー名",
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- メールアドレス -->
+            <div>
+              <%= f.label :email, "メールアドレス", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.email_field :email,
+                    autocomplete: "email",
+                    placeholder: "email",
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- パスワード -->
+            <div>
+              <%= f.label :password, "パスワード", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <% if @minimum_password_length %>
+                <p class="text-xs text-slate-500 mb-1">※ <%= @minimum_password_length %>文字以上</p>
+              <% end %>
+              <%= f.password_field :password,
+                    autocomplete: "new-password",
+                    placeholder: "パスワード",
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- パスワード確認 -->
+            <div>
+              <%= f.label :password_confirmation, "パスワード確認", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.password_field :password_confirmation,
+                    autocomplete: "new-password",
+                    placeholder: "パスワード確認",
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- プロフラグ（今は固定で true にしておく） -->
+            <%= f.hidden_field :shop_owner,
+                  value: false,
+                  data: { "account-type-target": "shopOwnerInput" } %>
+
+            <%= f.hidden_field :pro_player,
+                  value: true,
+                  data: { "account-type-target": "proPlayerInput" } %>
+
+            <!-- ボタン -->
+            <div class="pt-2">
+              <%= f.submit "アカウントを作成",
+                    class: "w-full inline-flex justify-center items-center rounded-md bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2" %>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- ログインへのリンク -->
+        <p class="mt-6 text-center text-sm text-slate-600">
+          既にアカウントをお持ちですか？
+          <%= link_to "ログイン", new_session_path(resource_name),
+                class: "text-sky-600 font-semibold hover:underline" %>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- フッター -->
+  <footer class="bg-white border-t mt-8">
+    <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between text-xs sm:text-sm text-slate-600">
+      <div class="flex items-center gap-2">
+        <div class="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center text-xs font-bold">
+          ロゴ
+        </div>
+      </div>
+      <nav class="flex gap-6">
+        <a href="#" class="hover:underline">利用規約</a>
+        <a href="#" class="hover:underline">お問い合わせ</a>
+        <a href="#" class="hover:underline">プライバシーポリシー</a>
+      </nav>
+    </div>
+  </footer>
+</div>
