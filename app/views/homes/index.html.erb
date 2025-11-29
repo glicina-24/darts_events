@@ -1,8 +1,131 @@
-<div class="container py-5">
-  <div class="text-center">
-    <h1 class="mb-4">Darts Events</h1>
-    <p class="lead">
-      ダーツの大会・イベント情報をチェックできるサービス（仮）
-    </p>
-  </div>
+<%# app/views/homes/index.html.erb %>
+<div class="min-h-screen flex flex-col bg-slate-50">
+
+  <!-- ヘッダー -->
+  <header class="w-full bg-white border-b">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <!-- ロゴ -->
+      <div class="flex items-center gap-2">
+        <div class="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center text-xs font-bold">
+          ロゴ
+        </div>
+      </div>
+
+      <!-- 検索バー -->
+      <div class="flex-1 max-w-xl">
+        <form action="#" method="get" class="w-full">
+          <div class="flex items-center bg-slate-100 rounded-full px-3 py-1.5 gap-2">
+            <input
+              type="text"
+              name="q"
+              placeholder="ダーツイベント・店舗・プレイヤーを検索"
+              class="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
+            >
+            <button type="submit" class="text-slate-500">
+              🔍
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ナビゲーション -->
+      <nav class="flex items-center gap-2 text-xs">
+        <a href="#"
+           class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50">
+          詳細検索
+        </a>
+        <a href="#"
+           class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50">
+          イベント一覧
+        </a>
+        <a href="#"
+           class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50">
+          登録店舗
+        </a>
+        <a href="#"
+           class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50">
+          登録プロ
+        </a>
+
+        <% if user_signed_in? %>
+          <%= link_to "マイページ",
+                root_path,
+                class: "px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50" %>
+          <%= button_to "ログアウト",
+                destroy_user_session_path,
+                method: :delete,
+                class: "px-3 py-1.5 rounded-full bg-black text-white hover:bg-slate-800" %>
+        <% else %>
+          <%= link_to "新規登録",
+                new_user_registration_path,
+                class: "px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50" %>
+          <%= link_to "ログイン",
+                new_user_session_path,
+                class: "px-3 py-1.5 rounded-full bg-black text-white hover:bg-slate-800" %>
+        <% end %>
+      </nav>
+    </div>
+  </header>
+
+  <!-- メイン -->
+  <main class="flex-1">
+    <!-- ヒーローセクション -->
+    <section class="bg-slate-200">
+      <div class="max-w-6xl mx-auto px-4 py-16">
+        <div class="h-40 sm:h-48 bg-slate-300 rounded-xl mb-6 flex items-center justify-center">
+          <div class="text-center">
+            <h1 class="text-3xl sm:text-4xl font-bold mb-2">Title</h1>
+            <p class="text-sm sm:text-base text-slate-600">Subtitle</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-4">
+          <%= link_to "イベントを投稿する",
+                "#",
+                class: "inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-black text-white text-sm font-semibold hover:bg-slate-800" %>
+
+          <%= link_to "イベントを探す",
+                "#",
+                class: "inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-slate-700 text-slate-800 text-sm font-semibold bg-white hover:bg-slate-50" %>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Pick セクション -->
+    <section class="max-w-6xl mx-auto px-4 py-10">
+      <h2 class="text-2xl font-bold mb-6">Top Pick!</h2>
+
+      <div class="grid gap-6 md:grid-cols-3">
+        <% 3.times do %>
+          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <!-- 画像プレースホルダ -->
+            <div class="h-32 bg-slate-200 flex items-center justify-center">
+              <span class="text-slate-400 text-3xl">🖼</span>
+            </div>
+            <div class="p-4">
+              <p class="text-sm font-semibold mb-1">Text</p>
+              <p class="text-xs text-slate-500 mb-1">S0</p>
+              <p class="text-xs text-slate-500">Body text.</p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </main>
+
+  <!-- フッター -->
+  <footer class="bg-white border-t mt-8">
+    <div class="max-w-6xl mx-auto h-16 px-4 flex items-center justify-between text-xs sm:text-sm text-slate-600">
+      <div class="flex items-center gap-2">
+        <div class="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center text-xs font-bold">
+          ロゴ
+        </div>
+      </div>
+      <nav class="flex gap-6">
+        <a href="#" class="hover:underline">利用規約</a>
+        <a href="#" class="hover:underline">お問い合わせ</a>
+        <a href="#" class="hover:underline">プライバシーポリシー</a>
+      </nav>
+    </div>
+  </footer>
 </div>
