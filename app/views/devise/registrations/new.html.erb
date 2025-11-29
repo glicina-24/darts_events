@@ -1,6 +1,5 @@
 <%# app/views/devise/registrations/new.html.erb %>
-<div class="min-h-screen flex flex-col bg-slate-100"
-     data-controller="account-type">
+<div class="min-h-screen flex flex-col bg-slate-100">
   <!-- ヘッダー -->
   <header class="w-full bg-white border-b">
     <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between">
@@ -15,8 +14,14 @@
         <%= link_to "マイページ", root_path,
               class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50" %>
       <% else %>
-        <%= link_to "ログイン", new_user_session_path,
-              class: "inline-flex items-center rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white hover:bg-slate-800" %>
+        <div class="flex items-center gap-2 text-xs">
+          <%= link_to "新規登録",
+                new_user_registration_path,
+                class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+          <%= link_to "ログイン",
+                new_user_session_path,
+                class: "inline-flex items-center rounded-full bg-black px-4 py-1.5 font-semibold text-white hover:bg-slate-800" %>
+        </div>
       <% end %>
     </div>
   </header>
@@ -27,45 +32,16 @@
       <!-- タイトル -->
       <h1 class="text-center text-3xl font-bold mb-2">新規登録</h1>
       <p class="text-center text-slate-500 mb-8">
-        アカウントタイプを選択して登録してください
+        基本情報を入力してアカウントを作成してください
       </p>
-
-      <!-- アカウントタイプタブ（見た目だけ・今はプロ選択状態） -->
-      <div class="mb-6 flex justify-center">
-        <div class="inline-flex bg-slate-200 rounded-full p-1 text-xs sm:text-sm">
-          <button type="button"
-                  data-account-type-target="tab"
-                  data-role="general"
-                  data-action="click->account-type#change"
-                  class="px-5 py-2 rounded-full text-slate-600 hover:bg-white/60">
-            一般ユーザー
-          </button>
-          <button type="button"
-                  data-account-type-target="tab"
-                  data-role="shop_owner"
-                  data-action="click->account-type#change"
-                  class="px-5 py-2 rounded-full text-slate-600 hover:bg-white/60">
-            店舗オーナー
-          </button>
-          <button type="button"
-                  data-account-type-target="tab"
-                  data-role="pro_player"
-                  data-action="click->account-type#change"
-                  class="px-5 py-2 rounded-full text-slate-600 hover:bg-white/60">
-            プロプレイヤー
-          </button>
-        </div>
-      </div>
 
       <!-- フォームカード -->
       <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
-        <h2 class="text-lg font-semibold mb-1"
-            data-account-type-target="title">
-          プロプレイヤー登録
+        <h2 class="text-lg font-semibold mb-1">
+          ユーザー登録
         </h2>
-        <p class="text-sm text-slate-500 mb-6"
-          data-account-type-target="description">
-          基本情報を入力してアカウントを作成します
+        <p class="text-sm text-slate-500 mb-6">
+          登録後に店舗オーナー・プロプレイヤーの申請ができます。
         </p>
 
         <%# エラーメッセージ %>
@@ -120,15 +96,6 @@
                     placeholder: "パスワード確認",
                     class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
             </div>
-
-            <!-- プロフラグ（今は固定で true にしておく） -->
-            <%= f.hidden_field :shop_owner,
-                  value: false,
-                  data: { "account-type-target": "shopOwnerInput" } %>
-
-            <%= f.hidden_field :pro_player,
-                  value: true,
-                  data: { "account-type-target": "proPlayerInput" } %>
 
             <!-- ボタン -->
             <div class="pt-2">
