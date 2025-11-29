@@ -4,15 +4,19 @@ class User < ApplicationRecord
 
   validates :name, presence: true
 
-  enum shop_owner_status: { not_applying: 0, pending: 1, approved: 2, rejected: 3 }, _prefix: true
-  enum pro_player_status:  { not_applying: 0, pending: 1, approved: 2, rejected: 3 }, _prefix: true
+  enum :shop_owner_status,
+  { not_applying: 0, pending: 1, approved: 2, rejected: 3 },
+  prefix: true
 
-  # 実際に「オーナーとして扱っていいか？」の判定
+  enum :pro_player_status,
+  { not_applying: 0, pending: 1, approved: 2, rejected: 3 },
+  prefix: true
+
   def shop_owner?
-    shop_owner_status == "approved"
+  shop_owner_status_approved?
   end
 
   def pro_player?
-    pro_player_status == "approved"
+  pro_player_status_approved?
   end
 end
