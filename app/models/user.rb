@@ -4,26 +4,16 @@ class User < ApplicationRecord
 
   validates :name, presence: true
   has_many :events, dependent: :destroy
-  has_many :stores, dependent: :destroy
+  has_many :shops, dependent: :destroy
 
-  enum :shop_owner_status,
-  { not_applying: 0, pending: 1, approved: 2, rejected: 3 },
-  prefix: true
-
-  enum :pro_player_status,
-  { not_applying: 0, pending: 1, approved: 2, rejected: 3 },
-  prefix: true
-
+  # ▼ 現在の仕様：
+  # 店舗が1件以上あれば「店舗オーナー」と扱う
   def shop_owner?
-  shop_owner_status_approved?
+    shops.exists?
   end
 
-  def pro_player?
-  pro_player_status_approved?
-  end
-  # Store 側でこんな enum 定義してる前提:
-  # enum :status, { pending: 0, approved: 1, rejected: 2 }, prefix: true
+  # ▼ イベント投稿などで利用:
   def approved_store_owner?
-    stores.status_approved.exists?
+    shop_owner?
   end
 end
