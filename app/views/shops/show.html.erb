@@ -1,0 +1,38 @@
+<div class="min-h-screen bg-slate-50">
+  <div class="max-w-3xl mx-auto px-4 py-8">
+    <%= link_to "← 店舗一覧に戻る",
+          shops_path,
+          class: "text-xs text-sky-600 hover:underline" %>
+
+    <div class="mt-4 bg-white rounded-2xl shadow-md p-6 sm:p-8">
+      <h1 class="text-2xl font-bold mb-2"><%= @shop.name %></h1>
+
+      <div class="space-y-2 text-sm text-slate-700 mb-4">
+        <% if @shop.postal_code.present? %>
+          <p><span class="font-medium">郵便番号：</span><%= @shop.postal_code %></p>
+        <% end %>
+
+        <% if @shop.prefecture.present? || @shop.city.present? || @shop.address.present? %>
+          <p>
+            <span class="font-medium">住所：</span>
+            <%= [@shop.prefecture, @shop.city, @shop.address].compact.join %>
+          </p>
+        <% end %>
+
+        <% if @shop.phone_number.present? %>
+          <p><span class="font-medium">電話番号：</span><%= @shop.phone_number %></p>
+        <% end %>
+
+        <p class="text-xs text-slate-400">
+          登録者: <%= @shop.user.name %>
+        </p>
+      </div>
+
+      <% if @shop.description.present? %>
+        <div class="border-t pt-4 mt-4 text-sm text-slate-700 whitespace-pre-wrap">
+          <%= @shop.description %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

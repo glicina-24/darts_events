@@ -1,0 +1,35 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  shop: one
+  title: MyString
+  description: MyText
+  start_datetime: 2025-12-01 16:22:16
+  end_datetime: 2025-12-01 16:22:16
+  location: MyString
+  address: MyString
+  prefecture: MyString
+  city: MyString
+  latitude: 9.99
+  longitude: 9.99
+  fee: 1
+  capacity: 1
+  entry_deadline: 2025-12-01 16:22:16
+  status: 1
+
+two:
+  shop: two
+  title: MyString
+  description: MyText
+  start_datetime: 2025-12-01 16:22:16
+  end_datetime: 2025-12-01 16:22:16
+  location: MyString
+  address: MyString
+  prefecture: MyString
+  city: MyString
+  latitude: 9.99
+  longitude: 9.99
+  fee: 1
+  capacity: 1
+  entry_deadline: 2025-12-01 16:22:16
+  status: 1

@@ -1,22 +1,15 @@
 class EventsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
-  before_action :require_approved_store_owner, only: [:new, :create]
-
-  def index
-    @events = Event.status_published.includes(:user).order(start_at: :asc)
-  end
-
-  def show
-    @event = Event.find(params[:id])
-  end
+  before_action :authenticate_user!, only: [ :new, :create ]
+  before_action :require_shop_owner, only: [ :new, :create ]
+  before_action :set_shop_for_event, only: [ :new, :create ]
 
   def new
-    @event = current_user.events.build
+    @event = @shop.events.build
   end
 
   def create
-    @event = current_user.events.build(event_params)
-    @event.status = :published
+    @event = @shop.events.build(event_params)
+    @event.status ||= :scheduled
 
     if @event.save
       redirect_to @event, notice: "イベントを投稿しました。"
@@ -29,12 +22,33 @@ class EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:title, :description, :start_at, :place, :capacity)
+    params.require(:event).permit(
+      :title,
+      :description,
+      :start_datetime,
+      :end_datetime,
+      :location,
+      :address,
+      :prefecture,
+      :city,
+      :latitude,
+      :longitude,
+      :fee,
+      :capacity,
+      :entry_deadline
+    )
   end
 
-  def require_approved_store_owner
-    unless current_user&.approved_store_owner?
-      redirect_to stores_path, alert: "イベント投稿には承認済みの店舗登録が必要です。まず店舗を登録してください。"
+  def require_shop_owner
+    unless current_user&.shop_owner?
+      redirect_to new_shop_path, alert: "イベント投稿には店舗登録が必要です。先に店舗を登録してください。"
+    end
+  end
+
+  def set_shop_for_event
+    @shop = current_user.shops.first
+    if @shop.nil?
+      redirect_to new_shop_path, alert: "まず店舗を登録してください。"
     end
   end
 end

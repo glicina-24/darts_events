@@ -30,27 +30,25 @@
 
       <!-- ナビゲーション -->
       <nav class="flex items-center gap-2 text-xs">
-        <a href="#"
-           class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50">
-          詳細検索
-        </a>
-        <a href="#"
-           class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50">
-          イベント一覧
-        </a>
-        <a href="#"
-           class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50">
-          登録店舗
-        </a>
-        <a href="#"
-           class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50">
-          登録プロ
-        </a>
+        <%= link_to "詳細検索",
+                events_path,
+                class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+        <%= link_to "イベント一覧",
+              events_path,
+              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+
+        <%= link_to "店舗一覧",
+              shops_path,
+              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+
+        <%= link_to "店舗登録",
+              new_shop_path,
+              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
 
         <% if user_signed_in? %>
           <%= link_to "マイページ",
                 root_path,
-                class: "px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50" %>
+                class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
           <%= button_to "ログアウト",
                 destroy_user_session_path,
                 method: :delete,
@@ -80,9 +78,11 @@
         </div>
 
         <div class="flex flex-wrap gap-4">
-          <%= link_to "イベントを投稿する",
-                "#",
-                class: "inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-black text-white text-sm font-semibold hover:bg-slate-800" %>
+          <% if user_signed_in? && current_user.shop_owner? %>
+            <%= link_to "イベントを投稿する",
+                  new_event_path,
+                  class: "inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-black text-white text-sm font-semibold hover:bg-slate-800" %>
+          <% end %>
 
           <%= link_to "イベントを探す",
                 "#",
