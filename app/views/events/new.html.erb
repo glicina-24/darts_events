@@ -1,0 +1,178 @@
+<%# app/views/events/new.html.erb %>
+<div class="min-h-screen flex flex-col bg-slate-100">
+  <!-- ヘッダー -->
+  <header class="w-full bg-white border-b">
+    <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center text-xs font-bold">
+          ロゴ
+        </div>
+        <span class="text-sm font-semibold tracking-wide">Darts Events</span>
+      </div>
+
+      <div class="flex items-center gap-2 text-xs">
+        <%= link_to "トップへ戻る",
+              root_path,
+              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+      </div>
+    </div>
+  </header>
+
+  <!-- メイン -->
+  <main class="flex-1">
+    <div class="max-w-3xl mx-auto px-4 py-10">
+      <h1 class="text-center text-3xl font-bold mb-2">イベントを投稿する</h1>
+
+      <!-- 主催店舗 -->
+      <p class="text-center text-slate-500 mb-8">
+        主催店舗：<strong><%= @shop.name %></strong>
+      </p>
+
+      <!-- フォームカード -->
+      <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
+        <%# エラーメッセージ %>
+        <% if @event.errors.any? %>
+          <div class="mb-4 rounded-md bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+            <p class="font-semibold mb-1">入力内容にエラーがあります。</p>
+            <ul class="list-disc list-inside">
+              <% @event.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <%= form_with(model: @event, local: true) do |f| %>
+          <div class="space-y-4">
+
+            <!-- タイトル -->
+            <div>
+              <%= f.label :title, "イベントタイトル", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.text_field :title,
+                    placeholder: "例：初心者歓迎ハウストーナメント",
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- 開始日時 -->
+            <div>
+              <%= f.label :start_datetime, "開始日時", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.datetime_field :start_datetime,
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- 終了日時 -->
+            <div>
+              <%= f.label :end_datetime, "終了日時（任意）", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.datetime_field :end_datetime,
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- 開催場所表示名 -->
+            <div>
+              <%= f.label :location, "開催場所（表示名）", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.text_field :location,
+                    placeholder: @shop.name,
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- 住所（任意） -->
+            <div>
+              <%= f.label :address, "住所（任意）", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.text_field :address,
+                    placeholder: "宮崎市●●丁目…",
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- 都道府県＋市区町村 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <%= f.label :prefecture, "都道府県", class: "block text-sm font-medium text-slate-700 mb-1" %>
+                <%= f.text_field :prefecture,
+                      placeholder: "宮崎県",
+                      class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                             focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+              </div>
+              <div>
+                <%= f.label :city, "市区町村", class: "block text-sm font-medium text-slate-700 mb-1" %>
+                <%= f.text_field :city,
+                      placeholder: "宮崎市✕✕",
+                      class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                             focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+              </div>
+            </div>
+
+            <!-- 緯度・経度（任意） -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <%= f.label :latitude, "緯度（任意）", class: "block text-sm font-medium text-slate-700 mb-1" %>
+                <%= f.number_field :latitude,
+                      step: 0.000001,
+                      class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                             focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+              </div>
+              <div>
+                <%= f.label :longitude, "経度（任意）", class: "block text-sm font-medium text-slate-700 mb-1" %>
+                <%= f.number_field :longitude,
+                      step: 0.000001,
+                      class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                             focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+              </div>
+            </div>
+
+            <!-- 参加費 -->
+            <div>
+              <%= f.label :fee, "参加費（円）", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.number_field :fee,
+                    min: 0,
+                    placeholder: "例）1000",
+                    class: "block w-full max-w-[200px] rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- 定員 -->
+            <div>
+              <%= f.label :capacity, "定員（任意）", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.number_field :capacity,
+                    min: 1,
+                    placeholder: "例）32",
+                    class: "block w-full max-w-[200px] rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- 締切日（任意） -->
+            <div>
+              <%= f.label :entry_deadline, "申し込み締切（任意）", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.datetime_field :entry_deadline,
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- 詳細説明 -->
+            <div>
+              <%= f.label :description, "イベント詳細", class: "block text-sm font-medium text-slate-700 mb-1" %>
+              <%= f.text_area :description,
+                    rows: 6,
+                    class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
+                           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+            </div>
+
+            <!-- ボタン -->
+            <div class="pt-2">
+              <%= f.submit "イベントを公開する",
+                    class: "w-full inline-flex justify-center items-center rounded-md bg-black 
+                           px-4 py-2 text-sm font-semibold text-white shadow-sm 
+                           hover:bg-slate-800 focus:outline-none focus:ring-2 
+                           focus:ring-slate-500 focus:ring-offset-2" %>
+            </div>
+
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </main>
+</div>

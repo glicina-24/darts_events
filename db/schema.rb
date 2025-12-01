@@ -10,9 +10,50 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_29_023821) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_01_072216) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "events", force: :cascade do |t|
+    t.bigint "shop_id", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.datetime "start_datetime", null: false
+    t.datetime "end_datetime"
+    t.datetime "entry_deadline"
+    t.string "location"
+    t.string "address"
+    t.string "prefecture"
+    t.string "city"
+    t.decimal "latitude", precision: 10, scale: 6
+    t.decimal "longitude", precision: 10, scale: 6
+    t.integer "fee"
+    t.integer "capacity"
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["shop_id"], name: "index_events_on_shop_id"
+    t.index ["start_datetime"], name: "index_events_on_start_datetime"
+  end
+
+  create_table "shops", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "address"
+    t.string "prefecture"
+    t.string "city"
+    t.string "postal_code"
+    t.string "phone_number"
+    t.decimal "latitude", precision: 10, scale: 6
+    t.decimal "longitude", precision: 10, scale: 6
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["city"], name: "index_shops_on_city"
+    t.index ["name"], name: "index_shops_on_name"
+    t.index ["prefecture"], name: "index_shops_on_prefecture"
+    t.index ["user_id"], name: "index_shops_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
@@ -30,4 +71,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_29_023821) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "events", "shops"
+  add_foreign_key "shops", "users"
 end

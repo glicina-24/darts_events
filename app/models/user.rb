@@ -3,20 +3,15 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :name, presence: true
-
-  enum :shop_owner_status,
-  { not_applying: 0, pending: 1, approved: 2, rejected: 3 },
-  prefix: true
-
-  enum :pro_player_status,
-  { not_applying: 0, pending: 1, approved: 2, rejected: 3 },
-  prefix: true
+  has_many :shops, dependent: :destroy
+  has_many :events, through: :shops
 
   def shop_owner?
-  shop_owner_status_approved?
+    shops.exists?
   end
 
-  def pro_player?
-  pro_player_status_approved?
+  # ▼ イベント投稿などで利用:
+  def approved_store_owner?
+    shop_owner?
   end
 end
