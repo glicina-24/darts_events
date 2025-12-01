@@ -1,5 +1,5 @@
 class ShopsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
+  before_action :authenticate_user!, only: [ :new, :create ]
 
   def index
     # ひとまず全部表示。あとで「公開フラグ」とか付けてもOK
