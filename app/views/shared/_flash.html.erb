@@ -1,0 +1,19 @@
+<% flash.each do |key, message| %>
+  <% next if message.blank? %>
+
+  <% color = case key.to_s %>
+              <% when "notice" then "bg-emerald-100 text-emerald-800 border-emerald-300" %>
+              <% when "alert", "error" then "bg-red-100 text-red-800 border-red-300" %>
+              <% else "bg-slate-100 text-slate-800 border-slate-300" %>
+            <% end %>
+
+  <div
+    class="flash-message fixed top-4 right-4
+          inline-flex w-auto z-50 border rounded-lg px-4 py-3 shadow
+          <%= color %>"
+    data-controller="flash"
+    data-flash-target="message">
+
+    <p class="text-sm font-medium"><%= message %></p>
+  </div>
+<% end %>

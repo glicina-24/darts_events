@@ -18,6 +18,9 @@
   </head>
 
   <body>
+    <% unless @disable_flash %>
+      <%= render "shared/flash" %>
+    <% end %>
     <%= yield %>
   </body>
 </html>

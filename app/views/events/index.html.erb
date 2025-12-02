@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-slate-50">
-  <!-- ヘッダー的なブロック -->
   <div class="max-w-5xl mx-auto px-4 py-8">
     <div class="flex items-center justify-between mb-6">
       <div>
@@ -29,12 +28,10 @@
                 class: "block bg-white rounded-2xl shadow-sm p-4 sm:p-5 hover:shadow-md transition" do %>
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div class="flex-1">
-                <!-- タイトル -->
                 <p class="text-base sm:text-lg font-semibold text-slate-900 mb-1">
                   <%= event.title %>
                 </p>
 
-                <!-- 主催店舗 & 場所 -->
                 <p class="text-xs text-slate-500 mb-1">
                   主催者：<%= event.shop.user.name %>
                 </p>
@@ -44,7 +41,6 @@
                   </p>
                 <% end %>
 
-                <!-- 住所っぽい情報 -->
                 <% if event.prefecture.present? || event.city.present? %>
                   <p class="text-xs text-slate-400 mt-1">
                     <%= [event.prefecture, event.city].compact.join %>
@@ -52,7 +48,6 @@
                 <% end %>
               </div>
 
-              <!-- 日時・参加費など右側 -->
               <div class="text-right text-xs sm:text-sm text-slate-600 min-w-[140px]">
                 <div class="mb-1">
                   <p class="text-[11px] text-slate-400">開始日時</p>
