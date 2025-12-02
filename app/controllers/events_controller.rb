@@ -3,6 +3,14 @@ class EventsController < ApplicationController
   before_action :require_shop_owner, only: [ :new, :create ]
   before_action :set_shop_for_event, only: [ :new, :create ]
 
+  def index
+    @events = Event.includes(shop: :user).order(start_datetime: :asc)
+  end
+
+  def show
+    @event = Event.includes(:shop).find(params[:id])
+  end
+
   def new
     @event = @shop.events.build
   end
