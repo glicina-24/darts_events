@@ -1,6 +1,4 @@
-<%# app/views/devise/sessions/new.html.erb %>
 <div class="min-h-screen flex flex-col bg-slate-100">
-  <!-- ヘッダー -->
   <header class="w-full bg-white border-b">
     <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between">
       <div class="flex items-center gap-2">
@@ -26,23 +24,19 @@
     </div>
   </header>
 
-  <!-- メイン -->
   <main class="flex-1">
     <div class="max-w-3xl mx-auto px-4 py-10">
-      <!-- タイトル -->
       <h1 class="text-center text-3xl font-bold mb-2">ログイン</h1>
       <p class="text-center text-slate-500 mb-8">
         登録済みのメールアドレスとパスワードでログインしてください
       </p>
 
-      <!-- フォームカード -->
       <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8 max-w-md mx-auto">
         <h2 class="text-lg font-semibold mb-1">アカウントにログイン</h2>
         <p class="text-sm text-slate-500 mb-6">
           ダーツイベントの作成や参加管理ができます。
         </p>
 
-        <%# ログイン失敗時のメッセージ %>
         <% if flash.alert.present? %>
           <div class="mb-4 rounded-md bg-red-50 border border-red-200 p-4 text-sm text-red-700">
             <p class="font-semibold"><%= flash.alert %></p>
@@ -51,7 +45,6 @@
 
         <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
           <div class="space-y-4">
-            <!-- メールアドレス -->
             <div>
               <%= f.label :email, "メールアドレス", class: "block text-sm font-medium text-slate-700 mb-1" %>
               <%= f.email_field :email,
@@ -61,7 +54,6 @@
                     class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
             </div>
 
-            <!-- パスワード -->
             <div>
               <%= f.label :password, "パスワード", class: "block text-sm font-medium text-slate-700 mb-1" %>
               <%= f.password_field :password,
@@ -70,7 +62,6 @@
                     class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
             </div>
 
-            <!-- ログイン状態を保持 -->
             <% if devise_mapping.rememberable? %>
               <div class="flex items-center justify-between text-xs text-slate-600">
                 <label class="inline-flex items-center gap-2">
@@ -80,7 +71,6 @@
               </div>
             <% end %>
 
-            <!-- ボタン -->
             <div class="pt-2">
               <%= f.submit "ログインする",
                     class: "w-full inline-flex justify-center items-center rounded-md bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2" %>
@@ -88,7 +78,6 @@
           </div>
         <% end %>
 
-        <!-- 下部リンク -->
         <div class="mt-6 text-center text-sm text-slate-600 space-y-1">
           <p>
             アカウントをお持ちでない方は
@@ -107,7 +96,6 @@
     </div>
   </main>
 
-  <!-- フッター -->
   <footer class="bg-white border-t mt-8">
     <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between text-xs sm:text-sm text-slate-600">
       <div class="flex items-center gap-2">
