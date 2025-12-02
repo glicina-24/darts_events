@@ -1,0 +1,121 @@
+<%# app/views/events/show.html.erb %>
+<div class="min-h-screen bg-slate-50">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- 戻るリンク -->
+    <div class="mb-4 flex items-center justify-between">
+      <%= link_to "← イベント一覧に戻る",
+            events_path,
+            class: "text-xs text-sky-600 hover:underline" %>
+
+      <%= link_to "店舗ページを見る",
+            shop_path(@event.shop),
+            class: "text-xs inline-flex items-center rounded-full border border-slate-300 px-3 py-1 font-semibold text-slate-700 hover:bg-slate-50" %>
+    </div>
+
+    <!-- イベントカード -->
+    <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
+      <!-- タイトル -->
+      <h1 class="text-2xl sm:text-3xl font-bold mb-2">
+        <%= @event.title %>
+      </h1>
+
+      <!-- 主催店舗 -->
+      <p class="text-sm text-slate-500 mb-4">
+        主催：<strong><%= @event.shop.name %></strong>
+      </p>
+
+      <!-- 基本情報 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-sm text-slate-700">
+        <div>
+          <p class="text-xs text-slate-400 mb-1">開始日時</p>
+          <p>
+            <% if @event.start_datetime.present? %>
+              <%= l @event.start_datetime, format: :long %>
+            <% else %>
+              未設定
+            <% end %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">終了日時</p>
+          <p>
+            <% if @event.end_datetime.present? %>
+              <%= l @event.end_datetime, format: :long %>
+            <% else %>
+              未設定
+            <% end %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">参加費</p>
+          <p>
+            <% if @event.fee.present? %>
+              <%= number_with_delimiter(@event.fee) %> 円
+            <% else %>
+              未設定
+            <% end %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">定員</p>
+          <p>
+            <% if @event.capacity.present? %>
+              <%= @event.capacity %> 人
+            <% else %>
+              制限なし
+            <% end %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">申し込み締切</p>
+          <p>
+            <% if @event.entry_deadline.present? %>
+              <%= l @event.entry_deadline, format: :long %>
+            <% else %>
+              設定なし
+            <% end %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">ステータス</p>
+          <p>
+            <%# enum status を日本語にしたいなら helper とかで対応してもOK %>
+            <%= @event.status&.to_s || "未設定" %>
+          </p>
+        </div>
+      </div>
+
+      <!-- 開催場所 / 住所 -->
+      <div class="mb-6 text-sm text-slate-700 space-y-2">
+        <% if @event.location.present? %>
+          <p>
+            <span class="text-xs text-slate-400 mr-2">開催場所</span>
+            <span class="font-medium"><%= @event.location %></span>
+          </p>
+        <% end %>
+
+        <% if @event.prefecture.present? || @event.city.present? || @event.address.present? %>
+          <p>
+            <span class="text-xs text-slate-400 mr-2">住所</span>
+            <%= [@event.prefecture, @event.city, @event.address].compact.join %>
+          </p>
+        <% end %>
+      </div>
+
+      <!-- 詳細説明 -->
+      <% if @event.description.present? %>
+        <div class="border-t pt-4 mt-4">
+          <h2 class="text-sm font-semibold text-slate-700 mb-2">イベント詳細</h2>
+          <div class="text-sm text-slate-700 whitespace-pre-wrap">
+            <%= @event.description %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
