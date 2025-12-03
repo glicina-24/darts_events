@@ -18,7 +18,7 @@
           </div>
         <% end %>
 
-        <%= form_with(model: @shop, local: true) do |f| %>
+        <%= form_with model: @shop do |f| %>
           <div class="space-y-4">
             <div>
               <%= f.label :name, "店舗名", class: "block text-sm font-medium text-slate-700 mb-1" %>
@@ -71,19 +71,22 @@
                     placeholder: "例）0985-xxx-xxx" %>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <%= f.label :latitude, "緯度（任意）", class: "block text-sm font-medium text-slate-700 mb-1" %>
-                <%= f.number_field :latitude,
-                      step: 0.000001,
-                      class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
-              </div>
-              <div>
-                <%= f.label :longitude, "経度（任意）", class: "block text-sm font-medium text-slate-700 mb-1" %>
-                <%= f.number_field :longitude,
-                      step: 0.000001,
-                      class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
-              </div>
+            <div class="space-y-1">
+              <%= f.label :images, "店舗画像（複数枚OK）", class: "block text-sm font-medium text-slate-700" %>
+              <%= f.file_field :images,
+                    multiple: true,
+                    accept: "image/*",
+                    class: "block w-full text-sm text-slate-700" %>
+
+              <% if @shop.images.attached? %>
+                <p class="text-xs text-slate-500 mt-1">登録済みの画像：</p>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  <% @shop.images.each do |image| %>
+                    <%= image_tag image.variant(resize_to_fill: [120, 120]),
+                          class: "h-20 w-20 rounded object-cover border" %>
+                  <% end %>
+                </div>
+              <% end %>
             </div>
 
             <div class="pt-2">

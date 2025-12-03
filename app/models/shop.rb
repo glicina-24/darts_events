@@ -2,6 +2,7 @@ class Shop < ApplicationRecord
   belongs_to :user
 
   has_many :events, dependent: :destroy
+  has_many_attached :images
 
   validates :name, presence: true, length: { maximum: 100 }
   validates :postal_code, length: { maximum: 10 }, allow_blank: true
