@@ -37,7 +37,8 @@ class ShopsController < ApplicationController
       :postal_code,
       :phone_number,
       :latitude,
-      :longitude
+      :longitude,
+      images: []
     )
   end
 end

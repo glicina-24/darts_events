@@ -127,6 +127,20 @@
                           focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
             </div>
 
+            <div class="space-y-1">
+              <%= f.label :image, "イベント画像", class: "block text-sm font-medium text-slate-700" %>
+              <%= f.file_field :image,
+                    accept: "image/*",
+                    class: "block w-full text-sm text-slate-700" %>
+
+              <% if @event.image.attached? %>
+                <p class="text-xs text-slate-500 mt-1">現在登録されている画像：</p>
+                <div class="mt-1">
+                  <%= image_tag @event.image, class: "h-24 w-24 rounded object-cover border" %>
+                </div>
+              <% end %>
+            </div>
+
             <div class="pt-2">
               <%= f.submit "イベントを公開する",
                     class: "w-full inline-flex justify-center items-center rounded-md bg-black 

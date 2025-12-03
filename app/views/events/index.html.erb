@@ -1,95 +1,51 @@
-<div class="min-h-screen bg-slate-50">
-  <div class="max-w-5xl mx-auto px-4 py-8">
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h1 class="text-2xl sm:text-3xl font-bold">イベント一覧</h1>
-        <p class="text-sm text-slate-500 mt-1">
-          登録されているダーツイベントを表示しています。
-        </p>
-      </div>
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-6">イベント一覧</h1>
 
-      <div class="flex items-center gap-2 text-xs">
-        <% if user_signed_in? && current_user.shop_owner? %>
-          <%= link_to "イベントを投稿する",
-                new_event_path,
-                class: "inline-flex items-center rounded-full bg-black px-4 py-2 font-semibold text-white hover:bg-slate-800" %>
-        <% else %>
-          <%= link_to "店舗登録してイベント投稿",
-                new_shop_path,
-                class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-50" %>
-        <% end %>
-      </div>
-    </div>
-
-    <% if @events.any? %>
-      <div class="space-y-4">
-        <% @events.each do |event| %>
-          <%= link_to event_path(event),
-                class: "block bg-white rounded-2xl shadow-sm p-4 sm:p-5 hover:shadow-md transition" do %>
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div class="flex-1">
-                <p class="text-base sm:text-lg font-semibold text-slate-900 mb-1">
-                  <%= event.title %>
-                </p>
-
-                <p class="text-xs text-slate-500 mb-1">
-                  主催者：<%= event.shop.user.name %>
-                </p>
-                <% if event.location.present? %>
-                  <p class="text-xs text-slate-500">
-                    開催場所：<%= event.location %>
-                  </p>
-                <% end %>
-
-                <% if event.prefecture.present? || event.city.present? %>
-                  <p class="text-xs text-slate-400 mt-1">
-                    <%= [event.prefecture, event.city].compact.join %>
-                  </p>
-                <% end %>
-              </div>
-
-              <div class="text-right text-xs sm:text-sm text-slate-600 min-w-[140px]">
-                <div class="mb-1">
-                  <p class="text-[11px] text-slate-400">開始日時</p>
-                  <% if event.start_datetime.present? %>
-                    <p><%= l event.start_datetime, format: :short %></p>
-                  <% else %>
-                    <p>未設定</p>
-                  <% end %>
-                </div>
-
-                <div>
-                  <p class="text-[11px] text-slate-400">参加費</p>
-                  <% if event.fee.present? %>
-                    <p><%= number_with_delimiter(event.fee) %> 円</p>
-                  <% else %>
-                    <p>未設定</p>
-                  <% end %>
-                </div>
-              </div>
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <% @events.each do |event| %>
+      <%= link_to event_path(event), class: "block group rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow" do %>
+        <div class="relative h-44 w-full overflow-hidden">
+          <% if event.image.attached? %>
+            <%= image_tag event.image.variant(resize_to_fill: [800, 400]),
+                  class: "h-full w-full object-cover transition-transform duration-200 group-hover:scale-105" %>
+          <% else %>
+            <div class="h-full w-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-400 text-sm">
+              No Image
             </div>
           <% end %>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="mt-8 bg-white rounded-2xl shadow-sm p-6 text-sm text-slate-600">
-        <p class="mb-2">まだイベントが登録されていません。</p>
-        <% if user_signed_in? && current_user.shop_owner? %>
-          <p>
-            <%= link_to "最初のイベントを投稿する",
-                  new_event_path,
-                  class: "text-sky-600 font-semibold hover:underline" %>
-          </p>
-        <% else %>
-          <p>
-            イベントを投稿するにはまず
-            <%= link_to "店舗登録",
-                  new_shop_path,
-                  class: "text-sky-600 font-semibold hover:underline" %>
-            が必要です。
-          </p>
-        <% end %>
-      </div>
+        </div>
+
+        <div class="px-4 pb-4 pt-3">
+          <span class="inline-flex items-center rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-500">
+            トーナメント
+          </span>
+
+          <h2 class="mt-2 text-[15px] font-semibold text-slate-900 leading-snug line-clamp-2 group-hover:underline">
+            <%= event.title %>
+          </h2>
+
+          <div class="space-y-1.5 text-xs text-slate-600 my-3">
+            <p class="flex items-center gap-1.5">
+              📅 <%= event.start_datetime ? l(event.start_datetime, format: :short) : "日時未定" %>
+            </p>
+            <p class="flex items-center gap-1.5">
+              📍 <%= event.location.presence || event.shop&.name || "会場未定" %>
+            </p>
+          </div>
+
+          <% if event.description.present? %>
+            <p class="text-xs text-slate-500 mb-3 line-clamp-2">
+              <%= event.description %>
+            </p>
+          <% end %>
+
+          <div class="flex items-center justify-between text-[11px] text-slate-500">
+            <span>👥 <%= event.capacity || "未設定" %>人</span>
+            <span>🏠 <%= event.shop&.name || "店舗未登録" %></span>
+          </div>
+
+        </div>
+      <% end %>
     <% end %>
   </div>
 </div>

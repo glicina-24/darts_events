@@ -28,6 +28,12 @@
         </p>
       </div>
 
+      <% if @shop.images.attached? %>
+        <% @shop.images.each do |image| %>
+          <%= image_tag image.variant(resize_to_fill: [300, 200]),
+                class: "w-40 h-28 object-cover border rounded" %>
+        <% end %>
+      <% end %>
       <% if @shop.description.present? %>
         <div class="border-t pt-4 mt-4 text-sm text-slate-700 whitespace-pre-wrap">
           <%= @shop.description %>

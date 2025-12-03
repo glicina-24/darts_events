@@ -43,7 +43,8 @@ class EventsController < ApplicationController
       :longitude,
       :fee,
       :capacity,
-      :entry_deadline
+      :entry_deadline,
+      :image
     )
   end
 
