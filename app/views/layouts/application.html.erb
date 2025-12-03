@@ -18,9 +18,11 @@
   </head>
 
   <body>
+    <%= render "shared/header" unless @disable_header %>
     <% unless @disable_flash %>
       <%= render "shared/flash" %>
     <% end %>
     <%= yield %>
+    <%= render "shared/footer" unless @disable_header %>
   </body>
 </html>

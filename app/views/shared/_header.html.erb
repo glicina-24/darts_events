@@ -1,0 +1,110 @@
+<header class="sticky top-0 z-40 w-full bg-white border-b" data-controller="menu">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <%= link_to root_path, class: "flex items-center gap-2" do %>
+      <div class="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center text-xs font-bold">
+        ロゴ
+      </div>
+      <span class="text-sm font-semibold tracking-wide">Darts Events</span>
+    <% end %>
+
+    <div class="flex-1 max-w-xs sm:max-w-sm md:max-w-xl">
+      <form action="#" method="get" class="w-full">
+        <div class="flex items-center bg-slate-100 rounded-full px-3 py-1.5 gap-2">
+          <input
+            type="text"
+            name="q"
+            placeholder="ダーツイベント・店舗・プレイヤーを検索"
+            class="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
+          >
+          <button type="submit" class="text-slate-500">🔍</button>
+        </div>
+      </form>
+    </div>
+
+    <nav class="hidden md:flex items-center gap-2 text-xs ml-auto">
+      <%= link_to "詳細検索",
+            events_path,
+            class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+
+      <%= link_to "イベント一覧",
+            events_path,
+            class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+
+      <%= link_to "店舗一覧",
+            shops_path,
+            class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+
+      <%= link_to "店舗登録",
+            new_shop_path,
+            class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+
+      <% if user_signed_in? %>
+        <%= link_to "マイページ",
+              root_path,
+              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50 text-xs" %>
+
+        <%= button_to "ログアウト",
+              destroy_user_session_path,
+              method: :delete,
+              form: { data: { turbo_confirm: "ログアウトしますか？" } },
+              class: "px-3 py-1.5 rounded-full bg-black text-white hover:bg-slate-800 text-xs" %>
+      <% else %>
+        <%= link_to "新規登録",
+              new_user_registration_path,
+              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+        <%= link_to "ログイン",
+              new_user_session_path,
+              class: "px-3 py-1.5 rounded-full bg-black text-white hover:bg-slate-800" %>
+      <% end %>
+    </nav>
+    <button
+      type="button"
+      class="inline-flex items-center justify-center h-9 w-9 rounded-md border border-slate-300 text-slate-700 md:hidden"
+      data-action="click->menu#toggle"
+    >
+      <span data-menu-target="iconOpen" class="text-lg leading-none">☰</span>
+      <span data-menu-target="iconClose" class="text-lg leading-none hidden">✕</span>
+    </button>
+  </div>
+  <!-- オーバーレイ -->
+  <div
+    data-menu-target="backdrop"
+    data-action="click->menu#close"
+    class="hidden fixed inset-0 bg-black/30 md:hidden z-30"
+  ></div>
+
+  <!-- スマホ用ドロワーメニュー：右からスライドイン -->
+  <div
+    data-menu-target="panel"
+    class="fixed inset-y-0 right-0 z-40 w-64 max-w-[75%] bg-white shadow-lg
+           transform translate-x-full transition-transform duration-400 md:hidden"
+  >
+    <nav class="h-full px-4 py-4 flex flex-col gap-2 text-sm">
+      <%= link_to "詳細検索", events_path,
+            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
+      <%= link_to "イベント一覧", events_path,
+            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
+      <%= link_to "店舗一覧", shops_path,
+            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
+      <%= link_to "店舗登録", new_shop_path,
+            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
+
+      <div class="mt-2 pt-2 border-t border-slate-200">
+        <% if user_signed_in? %>
+          <%= link_to "マイページ", root_path,
+                class: "block py-2 text-slate-700 hover:bg-slate-50" %>
+          <%= button_to "ログアウト",
+                destroy_user_session_path,
+                method: :delete,
+                form: { data: { turbo_confirm: "ログアウトしますか？" } },
+                class: "block w-full text-left py-2 text-slate-700 hover:bg-slate-50" %>
+        <% else %>
+          <%= link_to "新規登録", new_user_registration_path,
+                class: "block py-2 text-slate-700 hover:bg-slate-50" %>
+          <%= link_to "ログイン", new_user_session_path,
+                class: "block py-2 text-white bg-black rounded-md text-center mt-1 hover:bg-slate-800" %>
+        <% end %>
+      </div>
+    </nav>
+  </div>
+</header>
