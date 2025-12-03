@@ -11,14 +11,56 @@
     </div>
 
     <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
-      <h1 class="text-2xl sm:text-3xl font-bold mb-2">
-        <%= @event.title %>
-      </h1>
+      <!-- タイトル + 編集/削除 -->
+      <div class="flex items-start justify-between gap-3 mb-2">
+        <h1 class="text-2xl sm:text-3xl font-bold">
+          <%= @event.title %>
+        </h1>
+
+        <% if user_signed_in? && @event.shop.user == current_user %>
+          <div class="flex flex-col sm:flex-row gap-2 text-xs">
+            <%= link_to "編集する",
+                  edit_event_path(@event),
+                  class: "inline-flex items-center justify-center rounded-full border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+
+            <%= button_to "削除する",
+                  event_path(@event),
+                  method: :delete,
+                  form: { data: { turbo_confirm: "本当に削除しますか？" } },
+                  class: "inline-flex items-center justify-center rounded-full bg-red-500 px-3 py-1.5 font-semibold text-white hover:bg-red-600" %>
+          </div>
+        <% end %>
+      </div>
 
       <p class="text-sm text-slate-500 mb-4">
         主催：<strong><%= @event.shop.name %></strong>
       </p>
 
+      <!-- 画像セクション -->
+      <% if @event.images.attached? %>
+        <section class="mb-6">
+          <!-- メイン画像 -->
+          <div class="w-full mb-3">
+            <% main_image = @event.images.first %>
+            <div class="aspect-[16/9] w-full overflow-hidden rounded-xl bg-slate-100">
+              <%= image_tag main_image.variant(resize_to_fill: [1200, 675]),
+                    class: "w-full h-full object-cover" %>
+            </div>
+          </div>
+
+          <!-- サムネイル群（2枚目以降があれば） -->
+          <% if @event.images.many? %>
+            <div class="flex flex-wrap gap-2">
+              <% @event.images.drop(1).each do |image| %>
+                <%= image_tag image.variant(resize_to_fill: [240, 150]),
+                      class: "w-40 h-24 rounded-lg object-cover border" %>
+              <% end %>
+            </div>
+          <% end %>
+        </section>
+      <% end %>
+
+      <!-- 情報ブロック -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-sm text-slate-700">
         <div>
           <p class="text-xs text-slate-400 mb-1">開始日時</p>
