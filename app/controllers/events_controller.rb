@@ -1,14 +1,9 @@
 class EventsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show]
-
-  before_action :set_event, only: [:show, :edit, :update, :destroy]
-
-  # 新規作成だけ「店舗持ちユーザー」である必要あり
-  before_action :require_shop_owner, only: [:new, :create]
-  before_action :set_shop_for_event, only: [:new, :create]
-
-  # 編集・削除は「このイベントの店舗オーナー本人」だけ
-  before_action :authorize_event_owner!, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!, except: [ :index, :show ]
+  before_action :set_event, only: [ :show, :edit, :update, :destroy ]
+  before_action :require_shop_owner, only: [ :new, :create ]
+  before_action :set_shop_for_event, only: [ :new, :create ]
+  before_action :authorize_event_owner!, only: [ :edit, :update, :destroy ]
 
   def index
     @events = Event.includes(shop: :user).order(start_datetime: :asc)
