@@ -10,7 +10,7 @@ class CreateEvents < ActiveRecord::Migration[7.2]
       t.datetime :end_datetime
       t.datetime :entry_deadline
 
-      t.string  :location                # 開催場所（店舗名など）
+      t.string  :location
       t.string  :address
       t.string  :prefecture
       t.string  :city
@@ -21,7 +21,7 @@ class CreateEvents < ActiveRecord::Migration[7.2]
       t.integer :fee
       t.integer :capacity
 
-      t.integer :status, null: false, default: 0  # 0: scheduled
+      t.integer :status, null: false, default: 0
 
       t.timestamps
     end

@@ -5,8 +5,9 @@
     <% @events.each do |event| %>
       <%= link_to event_path(event), class: "block group rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow" do %>
         <div class="relative h-44 w-full overflow-hidden">
-          <% if event.image.attached? %>
-            <%= image_tag event.image.variant(resize_to_fill: [800, 400]),
+          <% if event.images.attached? %>
+            <% main_image = event.images.first %>
+            <%= image_tag main_image.variant(resize_to_fill: [800, 400]),
                   class: "h-full w-full object-cover transition-transform duration-200 group-hover:scale-105" %>
           <% else %>
             <div class="h-full w-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-400 text-sm">

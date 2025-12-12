@@ -10,7 +10,6 @@ class User < ApplicationRecord
     shops.exists?
   end
 
-  # ▼ イベント投稿などで利用:
   def approved_store_owner?
     shop_owner?
   end

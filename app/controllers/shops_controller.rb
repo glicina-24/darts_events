@@ -1,13 +1,13 @@
 class ShopsController < ApplicationController
-  before_action :authenticate_user!, only: [ :new, :create ]
+  before_action :authenticate_user!, only: [ :new, :create, :edit, :update, :destroy ]
+  before_action :set_shop, only: [ :show, :edit, :update, :destroy ]
+  before_action :authorize_shop_owner!, only: [ :edit, :update, :destroy ]
 
   def index
-    # ひとまず全部表示。あとで「公開フラグ」とか付けてもOK
     @shops = Shop.includes(:user).order(created_at: :desc)
   end
 
   def show
-    @shop = Shop.find(params[:id])
   end
 
   def new
@@ -25,7 +25,34 @@ class ShopsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    if @shop.update(shop_params)
+      redirect_to @shop, notice: "店舗情報を更新しました。"
+    else
+      flash.now[:alert] = "店舗情報の更新に失敗しました。入力内容を確認してください。"
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @shop.destroy
+    redirect_to shops_path, notice: "店舗を削除しました。", status: :see_other
+  end
+
   private
+
+  def set_shop
+    @shop = Shop.find(params[:id])
+  end
+
+  def authorize_shop_owner!
+    return if @shop.user == current_user
+
+    redirect_to @shop, alert: "この店舗を編集・削除する権限がありません。"
+  end
 
   def shop_params
     params.require(:shop).permit(
