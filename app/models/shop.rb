@@ -4,6 +4,11 @@ class Shop < ApplicationRecord
   has_many :events, dependent: :destroy
   has_many_attached :images
 
+  validates :images,
+  content_type: %w[image/jpeg image/png image/webp],
+  size: { less_than: 5.megabytes },
+  limit: { max: 5 }
+
   validates :name, presence: true, length: { maximum: 100 }
   validates :address, length: { maximum: 255 }, allow_blank: true
   validates :prefecture, length: { maximum: 50 }, allow_blank: true
