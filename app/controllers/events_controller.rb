@@ -76,8 +76,7 @@ class EventsController < ApplicationController
 
   def require_shop_owner
     unless current_user&.shop_owner?
-      redirect_to new_shop_path,
-                  alert: "イベント投稿には店舗登録が必要です。先に店舗を登録してください。"
+      redirect_to new_shop_path, alert: "イベント投稿には店舗登録が必要です。先に店舗を登録してください。"
     end
   end
 

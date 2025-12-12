@@ -1,44 +1,75 @@
 <div class="min-h-screen bg-slate-50">
   <div class="max-w-3xl mx-auto px-4 py-8">
-    <%= link_to "← 店舗一覧に戻る",
-          shops_path,
-          class: "text-xs text-sky-600 hover:underline" %>
+    <%= link_to "← 店舗一覧に戻る", shops_path, class: "text-xs text-sky-600 hover:underline" %>
 
-    <div class="mt-4 bg-white rounded-2xl shadow-md p-6 sm:p-8">
-      <h1 class="text-2xl font-bold mb-2"><%= @shop.name %></h1>
-
-      <div class="space-y-2 text-sm text-slate-700 mb-4">
-        <% if @shop.postal_code.present? %>
-          <p><span class="font-medium">郵便番号：</span><%= @shop.postal_code %></p>
-        <% end %>
-
-        <% if @shop.prefecture.present? || @shop.city.present? || @shop.address.present? %>
-          <p>
-            <span class="font-medium">住所：</span>
-            <%= [@shop.prefecture, @shop.city, @shop.address].compact.join %>
-          </p>
-        <% end %>
-
-        <% if @shop.phone_number.present? %>
-          <p><span class="font-medium">電話番号：</span><%= @shop.phone_number %></p>
-        <% end %>
-
-        <p class="text-xs text-slate-400">
-          登録者: <%= @shop.user.name %>
-        </p>
-      </div>
+    <div class="mt-4 bg-white rounded-2xl shadow-md overflow-hidden">
 
       <% if @shop.images.attached? %>
-        <% @shop.images.each do |image| %>
-          <%= image_tag image.variant(resize_to_fill: [300, 200]),
-                class: "w-40 h-28 object-cover border rounded" %>
+        <div class="w-full h-56 sm:h-72 overflow-hidden">
+          <% main_image = @shop.images.first %>
+          <%= image_tag main_image.variant(resize_to_fill: [1200, 500]),
+                class: "w-full h-full object-cover" %>
+        </div>
+
+        <% if @shop.images.many? %>
+          <div class="px-6 py-4 flex gap-3 flex-wrap">
+            <% @shop.images.drop(1).each do |image| %>
+              <%= image_tag image.variant(resize_to_fill: [140, 90]),
+                    class: "w-36 h-24 rounded object-cover border" %>
+            <% end %>
+          </div>
         <% end %>
       <% end %>
-      <% if @shop.description.present? %>
-        <div class="border-t pt-4 mt-4 text-sm text-slate-700 whitespace-pre-wrap">
-          <%= @shop.description %>
+
+      <div class="p-6 sm:p-8">
+
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <h1 class="text-2xl font-bold">
+            <%= @shop.name %>
+          </h1>
+
+          <% if user_signed_in? && @shop.user == current_user %>
+            <div class="flex flex-col sm:flex-row gap-2 text-xs">
+              <%= link_to "編集",
+                    edit_shop_path(@shop),
+                    class: "inline-flex items-center justify-center rounded-full border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+
+              <%= button_to "削除",
+                    shop_path(@shop),
+                    method: :delete,
+                    form: { data: { turbo_confirm: "本当に削除しますか？" } },
+                    class: "inline-flex items-center justify-center rounded-full bg-red-500 px-3 py-1.5 font-semibold text-white hover:bg-red-600" %>
+            </div>
+          <% end %>
         </div>
-      <% end %>
+
+        <div class="space-y-2 text-sm text-slate-700 mb-4">
+          <% if @shop.postal_code.present? %>
+            <p><span class="font-medium">郵便番号：</span><%= @shop.postal_code %></p>
+          <% end %>
+
+          <% if @shop.prefecture.present? || @shop.city.present? || @shop.address.present? %>
+            <p>
+              <span class="font-medium">住所：</span>
+              <%= [@shop.prefecture, @shop.city, @shop.address].compact.join %>
+            </p>
+          <% end %>
+
+          <% if @shop.phone_number.present? %>
+            <p><span class="font-medium">電話番号：</span><%= @shop.phone_number %></p>
+          <% end %>
+
+          <p class="text-xs text-slate-400">
+            登録者: <%= @shop.user.name %>
+          </p>
+        </div>
+
+        <% if @shop.description.present? %>
+          <div class="border-t pt-4 mt-4 text-sm text-slate-700 whitespace-pre-wrap">
+            <%= @shop.description %>
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>
