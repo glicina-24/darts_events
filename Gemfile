@@ -67,4 +67,7 @@ end
 
 gem 'devise'
 gem 'devise-i18n'
+
 gem "active_storage_validations"
+
+gem "aws-sdk-s3", require: false

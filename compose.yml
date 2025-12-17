@@ -28,11 +28,15 @@ services:
       - node_modules:/myapp/node_modules
     environment:
       TZ: Asia/Tokyo
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     ports:
       - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
 volumes:
   bundle_data:
   postgresql_data:
