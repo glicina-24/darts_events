@@ -69,12 +69,20 @@
             accept: "image/*",
             class: "block w-full text-sm text-slate-700" %>
 
-      <% if @shop.images.attached? %>
+      <% if @shop.persisted? && @shop.images.attached? %>
         <p class="text-xs text-slate-500 mt-1">登録済みの画像：</p>
         <div class="mt-2 flex flex-wrap gap-2">
           <% @shop.images.each do |image| %>
-            <%= image_tag image.variant(resize_to_fill: [120, 120]),
-                  class: "h-20 w-20 rounded object-cover border" %>
+            <% next unless image.persisted? %>
+
+            <div class="relative group">
+              <%= image_tag image.variant(resize_to_fill: [120, 120]),
+                    class: "h-20 w-20 rounded object-cover border" %>
+
+              <%= link_to "×",image_shop_path(@shop, image_id: image.id),
+                data: { turbo_method: :delete, turbo_confirm: "この画像を削除しますか？" },
+                class: "absolute -top-2 -right-2 h-6 w-6 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition" %>
+            </div>
           <% end %>
         </div>
       <% end %>

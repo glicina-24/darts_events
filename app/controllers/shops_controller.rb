@@ -29,7 +29,8 @@ class ShopsController < ApplicationController
   end
 
   def update
-    if @shop.update(shop_params)
+    if @shop.update(shop_params.except(:images))
+      @shop.images.attach(shop_params[:images]) if shop_params[:images].present?
       redirect_to @shop, notice: "店舗情報を更新しました。"
     else
       flash.now[:alert] = "店舗情報の更新に失敗しました。入力内容を確認してください。"
@@ -40,6 +41,13 @@ class ShopsController < ApplicationController
   def destroy
     @shop.destroy
     redirect_to shops_path, notice: "店舗を削除しました。", status: :see_other
+  end
+
+  def destroy_image
+    @shop = current_user.shops.find(params[:id])
+    image = @shop.images.find(params[:image_id])
+    image.purge
+    redirect_to edit_shop_path(@shop), notice: "画像を削除しました。"
   end
 
   private
