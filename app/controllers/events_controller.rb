@@ -31,10 +31,11 @@ class EventsController < ApplicationController
   end
 
   def update
-    if @event.update(event_params)
+    if @event.update(event_params.except(:images))
+      @event.images.attach(event_params[:images]) if event_params[:images].present?
       redirect_to @event, notice: "イベントを更新しました。"
     else
-      flash.now[:alert] = "イベントの更新に失敗しました。入力内容を確認してください。"
+      flash.now[:alert] = "更新に失敗しました。"
       render :edit, status: :unprocessable_entity
     end
   end
@@ -44,6 +45,14 @@ class EventsController < ApplicationController
     redirect_to events_path, notice: "イベントを削除しました。", status: :see_other
   end
 
+  def destroy_image
+    @event = current_user.events.find(params[:id])
+    image = @event.images.find(params[:image_id])
+
+    image.purge
+
+    redirect_to edit_event_path(@event), notice: "画像を削除しました。"
+  end
   private
 
   def event_params
