@@ -63,6 +63,7 @@ group :development do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
+  gem "faker"
 end
 
 gem 'devise'
@@ -73,3 +74,5 @@ gem "active_storage_validations"
 gem "aws-sdk-s3", require: false
 
 gem "ransack"
+
+gem "kaminari"

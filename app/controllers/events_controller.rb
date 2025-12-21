@@ -7,7 +7,7 @@ class EventsController < ApplicationController
 
   def index
     @q = Event.ransack(params[:q])
-    @events = @q.result.includes(:shop, participants: []).order(start_datetime: :asc)
+    @events = @q.result.includes(:shop, participants: []).order(start_datetime: :asc).page(params[:page]).per(12)
     @pros = User.approved_pros.order(:name)
   end
 

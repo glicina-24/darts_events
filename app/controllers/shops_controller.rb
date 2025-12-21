@@ -4,7 +4,7 @@ class ShopsController < ApplicationController
   before_action :authorize_shop_owner!, only: [ :edit, :update, :destroy ]
 
   def index
-    @shops = Shop.includes(:user).order(created_at: :desc)
+    @shops = Shop.includes(:user).order(created_at: :desc).page(params[:page]).per(12)
   end
 
   def show
