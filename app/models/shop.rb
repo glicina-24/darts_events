@@ -22,4 +22,12 @@ class Shop < ApplicationRecord
   def owned_by?(user)
     self.user == user
   end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[name prefecture city address]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[user events]
+  end
 end
