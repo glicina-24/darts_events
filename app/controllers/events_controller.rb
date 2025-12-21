@@ -6,7 +6,9 @@ class EventsController < ApplicationController
   before_action :authorize_event_owner!, only: [ :edit, :update, :destroy ]
 
   def index
-    @events = Event.includes(shop: :user).order(start_datetime: :asc)
+    @q = Event.ransack(params[:q])
+    @events = @q.result.includes(:shop, participants: []).order(start_datetime: :asc)
+    @pros = User.approved_pros.order(:name)
   end
 
   def show

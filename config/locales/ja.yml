@@ -1,0 +1,8 @@
+ja:
+  enums:
+    event:
+      status:
+        scheduled: "開催予定"
+        ongoing: "開催中"
+        finished: "終了"
+        canceled: "中止"
