@@ -1,0 +1,37 @@
+<nav class="inline-flex items-center gap-1">
+  <%= paginator.render do %>
+
+    <% if current_page.first? %>
+      <span class="px-3 py-1.5 rounded-full border text-sm text-slate-400">前へ</span>
+    <% else %>
+      <%= link_to "前へ",
+            url_for(params.permit!.to_h.merge(page: current_page.number - 1)),
+            class: "px-3 py-1.5 rounded-full border text-sm hover:bg-slate-100" %>
+    <% end %>
+
+    <% paginator.each_page do |page| %>
+      <% if page.display_tag? %>
+        <% if page.current? %>
+          <span class="px-3 py-1.5 rounded-full bg-black text-white text-sm font-semibold">
+            <%= page.number %>
+          </span>
+        <% else %>
+          <%= link_to page.number,
+                url_for(params.permit!.to_h.merge(page: page.number)),
+                class: "px-3 py-1.5 rounded-full border text-sm hover:bg-slate-100" %>
+        <% end %>
+      <% elsif !page.was_truncated? %>
+        <span class="px-2 text-slate-400">…</span>
+      <% end %>
+    <% end %>
+
+    <% if current_page.last? %>
+      <span class="px-3 py-1.5 rounded-full border text-sm text-slate-400">次へ</span>
+    <% else %>
+      <%= link_to "次へ",
+            url_for(params.permit!.to_h.merge(page: current_page.number + 1)),
+            class: "px-3 py-1.5 rounded-full border text-sm hover:bg-slate-100" %>
+    <% end %>
+
+  <% end %>
+</nav>

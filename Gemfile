@@ -45,6 +45,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "faker"
 end
 
 group :development do
@@ -63,7 +65,6 @@ group :development do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
-  gem "faker"
 end
 
 gem 'devise'
