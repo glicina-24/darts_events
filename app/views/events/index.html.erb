@@ -90,4 +90,7 @@
       <% end %>
     <% end %>
   </div>
+  <div class="mt-8 flex justify-center">
+    <%= paginate @events, params: @pagination_params %>
+  </div>
 </div>

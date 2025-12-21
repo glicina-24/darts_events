@@ -45,6 +45,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "faker"
 end
 
 group :development do
@@ -73,3 +75,5 @@ gem "active_storage_validations"
 gem "aws-sdk-s3", require: false
 
 gem "ransack"
+
+gem "kaminari"

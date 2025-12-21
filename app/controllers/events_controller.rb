@@ -7,8 +7,10 @@ class EventsController < ApplicationController
 
   def index
     @q = Event.ransack(params[:q])
-    @events = @q.result.includes(:shop, participants: []).order(start_datetime: :asc)
+    @events = @q.result.includes(:shop, participants: []).order(start_datetime: :asc).page(params[:page]).per(12)
     @pros = User.approved_pros.order(:name)
+
+    @pagination_params = { q: q_params.to_h }
   end
 
   def show
@@ -55,6 +57,7 @@ class EventsController < ApplicationController
 
     redirect_to edit_event_path(@event), notice: "画像を削除しました。"
   end
+
   private
 
   def event_params
@@ -95,5 +98,17 @@ class EventsController < ApplicationController
 
   def authorize_event_owner!
     redirect_to @event, alert: "このイベントを編集する権限がありません。" unless @event.owned_by?(current_user)
+  end
+
+  def q_params
+    return {} unless params[:q].is_a?(ActionController::Parameters)
+    params.require(:q).permit(
+      :title_cont,
+      :shop_name_cont,
+      :shop_prefecture_eq,
+      :start_datetime_gteq,
+      :start_datetime_lteq,
+      :participants_id_eq
+    )
   end
 end
