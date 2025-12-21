@@ -102,6 +102,13 @@ class EventsController < ApplicationController
 
   def q_params
     return {} unless params[:q].is_a?(ActionController::Parameters)
-    params.require(:q).permit!
+    params.require(:q).permit(
+      :title_cont,
+      :shop_name_cont,
+      :shop_prefecture_eq,
+      :start_datetime_gteq,
+      :start_datetime_lteq,
+      :participants_id_eq
+    )
   end
 end
