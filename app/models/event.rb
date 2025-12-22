@@ -4,6 +4,7 @@ class Event < ApplicationRecord
 
   has_many :event_participants, dependent: :destroy
   has_many :participants, through: :event_participants, source: :user
+  has_many :favorites, as: :favoritable, dependent: :destroy
 
   delegate :name, to: :shop, prefix: true
   delegate :prefecture, to: :shop, prefix: true, allow_nil: true
@@ -46,5 +47,10 @@ class Event < ApplicationRecord
 
   def status_i18n
     I18n.t("enums.event.status.#{status}", default: status)
+  end
+
+  def favorited_by?(user)
+    return false unless user
+    favorites.exists?(user_id: user.id)
   end
 end

@@ -1,0 +1,17 @@
+<div id="<%= dom_id(favoritable, :favorite_button) %>">
+  <% if !user_signed_in? %>
+    <%= link_to "♡", new_user_session_path, class: "text-slate-400 text-xl" %>
+  <% elsif favorite.present? %>
+    <%= button_to "♥",
+          polymorphic_path([favoritable, :favorite]),
+          method: :delete,
+          form: { data: { turbo_stream: true } },
+          class: "text-red-500 text-xl" %>
+  <% else %>
+    <%= button_to "♡",
+          polymorphic_path([favoritable, :favorite]),
+          method: :post,
+          form: { data: { turbo_stream: true } },
+          class: "text-slate-400 text-xl" %>
+  <% end %>
+</div>
