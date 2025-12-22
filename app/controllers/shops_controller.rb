@@ -5,6 +5,14 @@ class ShopsController < ApplicationController
 
   def index
     @shops = Shop.includes(:user).order(created_at: :desc).page(params[:page]).per(12)
+    if user_signed_in?
+      @favorite_shop_ids = current_user
+        .favorites
+        .where(favoritable_type: "Shop")
+        .pluck(:favoritable_id)
+    else
+      @favorite_shop_ids = []
+    end
   end
 
   def show
