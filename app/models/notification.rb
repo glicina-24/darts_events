@@ -8,10 +8,10 @@ class Notification < ApplicationRecord
   def message
     actor_name = actor&.name || "誰か"
 
-    case [action, notifiable_type]
-    when ["favorited", "Event"]
+    case [ action, notifiable_type ]
+    when [ "favorited", "Event" ]
       "あなたのイベントが #{actor_name} にお気に入りされました"
-    when ["favorited", "Shop"]
+    when [ "favorited", "Shop" ]
       "あなたの店舗が #{actor_name} にお気に入りされました"
     else
       "通知があります"
