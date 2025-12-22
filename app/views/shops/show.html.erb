@@ -28,6 +28,11 @@
             <%= @shop.name %>
           </h1>
 
+          <div class="shrink-0">
+            <% favorite = user_signed_in? ? current_user.favorites.find_by(favoritable: @shop) : nil %>
+            <%= render "favorites/button", favoritable: @shop, favorite: favorite %>
+          </div>
+
           <% if user_signed_in? && @shop.user == current_user %>
             <div class="flex flex-col sm:flex-row gap-2 text-xs">
               <%= link_to "編集",

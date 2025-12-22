@@ -1,0 +1,125 @@
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="flex items-end justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold">マイページ</h1>
+      <p class="text-sm text-slate-500 mt-1">
+        <%= current_user.name %>（<%= current_user.email %>）
+      </p>
+    </div>
+
+    <%= link_to "プロフィール変更",
+          edit_user_registration_path,
+          class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50" %>
+  </div>
+
+  <!-- タブ -->
+  <div class="mb-6">
+    <div class="inline-flex rounded-full bg-slate-200 p-1 text-sm">
+      <a href="#favorites" class="px-4 py-2 rounded-full bg-white shadow-sm">お気に入り</a>
+      <a href="#notifications" class="px-4 py-2 rounded-full text-slate-600 hover:bg-white/60">通知設定</a>
+    </div>
+  </div>
+
+  <!-- お気に入り -->
+  <section id="favorites" class="space-y-10">
+    <div>
+      <h2 class="text-lg font-semibold mb-3">お気に入りイベント</h2>
+
+      <% if @favorite_events.any? %>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <% @favorite_events.each do |event| %>
+            <div class="group rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+              <div class="relative h-40 w-full overflow-hidden">
+                <% if event.images.attached? %>
+                  <%= image_tag event.images.first.variant(resize_to_fill: [800, 400]),
+                        class: "h-full w-full object-cover group-hover:scale-105 transition-transform" %>
+                <% else %>
+                  <div class="h-full w-full bg-slate-100 flex items-center justify-center text-slate-400 text-sm">No Image</div>
+                <% end %>
+
+                <div class="absolute top-3 right-3 z-10">
+                  <% favorite = current_user.favorites.find_by(favoritable: event) %>
+                  <%= render "favorites/button", favoritable: event, favorite: favorite %>
+                </div>
+              </div>
+
+              <div class="p-4">
+                <%= link_to event_path(event), class: "block" do %>
+                  <p class="text-sm font-semibold line-clamp-2 group-hover:underline"><%= event.title %></p>
+                <% end %>
+
+                <div class="mt-2 text-xs text-slate-600 space-y-1">
+                  <p>🏠 <%= event.shop&.name %></p>
+                  <p>📅 <%= event.start_datetime ? l(event.start_datetime, format: :short) : "日時未定" %></p>
+                  <p>📍 <%= event.location.presence || event.shop&.name || "会場未定" %></p>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-slate-500">お気に入りイベントはまだありません。</p>
+      <% end %>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold mb-3">お気に入り店舗</h2>
+
+      <% if @favorite_shops.any? %>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <% @favorite_shops.each do |shop| %>
+            <div class="group rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+              <div class="relative h-40 w-full overflow-hidden">
+                <% if shop.images.attached? %>
+                  <%= image_tag shop.images.first.variant(resize_to_fill: [800, 400]),
+                        class: "h-full w-full object-cover group-hover:scale-105 transition-transform" %>
+                <% else %>
+                  <div class="h-full w-full bg-slate-100 flex items-center justify-center text-slate-400 text-sm">No Image</div>
+                <% end %>
+
+                <div class="absolute top-3 right-3 z-10">
+                  <% favorite = current_user.favorites.find_by(favoritable: shop) %>
+                  <%= render "favorites/button", favoritable: shop, favorite: favorite %>
+                </div>
+              </div>
+
+              <div class="p-4">
+                <%= link_to shop_path(shop), class: "block" do %>
+                  <p class="text-sm font-semibold line-clamp-2 group-hover:underline"><%= shop.name %></p>
+                <% end %>
+
+                <div class="mt-2 text-xs text-slate-600 space-y-1">
+                  <p>📍 <%= [shop.prefecture, shop.city].compact.join %></p>
+                  <p class="text-slate-500">登録者: <%= shop.user&.name %></p>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-slate-500">お気に入り店舗はまだありません。</p>
+      <% end %>
+    </div>
+  </section>
+
+  <!-- 通知設定（今はダミー） -->
+  <section id="notifications" class="mt-10">
+    <h2 class="text-lg font-semibold mb-3">通知設定</h2>
+
+    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 text-sm">
+      <label class="flex items-center justify-between">
+        <span>メール通知</span>
+        <input type="checkbox" <%= "checked" if @notification_settings[:email] %> disabled>
+      </label>
+
+      <label class="flex items-center justify-between">
+        <span>プッシュ通知</span>
+        <input type="checkbox" <%= "checked" if @notification_settings[:push] %> disabled>
+      </label>
+
+      <p class="text-xs text-slate-500">
+        ※ ここは後でDB保存＆実装する。今は見た目だけ。
+      </p>
+    </div>
+  </section>
+</div>

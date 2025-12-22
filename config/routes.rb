@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   root "homes#index"
   devise_for :users
+  resource :mypage, only: %i[show], controller: "mypage"
 
   concern :favoritable do
     resource :favorite, only: %i[create destroy]

@@ -17,6 +17,11 @@
           <%= @event.title %>
         </h1>
 
+        <div class="shrink-0">
+          <% favorite = user_signed_in? ? current_user.favorites.find_by(favoritable: @event) : nil %>
+          <%= render "favorites/button", favoritable: @event, favorite: favorite %>
+        </div>
+
         <% if user_signed_in? && @event.shop.user == current_user %>
           <div class="flex flex-col sm:flex-row gap-2 text-xs">
             <%= link_to "編集する",

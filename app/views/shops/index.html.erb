@@ -13,16 +13,28 @@
     <% if @shops.any? %>
       <div class="grid gap-4 md:grid-cols-2">
         <% @shops.each do |shop| %>
-          <%= link_to shop_path(shop),
-                class: "block bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition" do %>
-            <p class="text-sm font-semibold mb-1"><%= shop.name %></p>
-            <p class="text-xs text-slate-500 mb-1">
-              <%= [shop.prefecture, shop.city].compact.join %>
-            </p>
-            <p class="text-xs text-slate-500">
-              <%= shop.address %>
-            </p>
-          <% end %>
+          <div class="group rounded-2xl bg-white border shadow-sm overflow-hidden relative">
+            <div class="absolute top-3 right-3 z-10">
+              <% favorite =
+                  user_signed_in? && @favorite_shop_ids.include?(shop.id) ?
+                    current_user.favorites.find { |f| f.favoritable_id == shop.id && f.favoritable_type == "Shop" } :
+                    nil
+              %>
+              <%= render "favorites/button",
+                    favoritable: shop,
+                    favorite: favorite %>
+            </div>
+            <%= link_to shop_path(shop),
+                  class: "block bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition" do %>
+              <p class="text-sm font-semibold mb-1"><%= shop.name %></p>
+              <p class="text-xs text-slate-500 mb-1">
+                <%= [shop.prefecture, shop.city].compact.join %>
+              </p>
+              <p class="text-xs text-slate-500">
+                <%= shop.address %>
+              </p>
+            <% end %>
+          </div>
         <% end %>
       </div>
     <% else %>
