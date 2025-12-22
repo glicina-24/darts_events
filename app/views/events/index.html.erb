@@ -1,95 +1,133 @@
 <div class="max-w-6xl mx-auto px-4 py-8">
   <%= search_form_for @q, url: events_path, method: :get, class: "mb-6" do |f| %>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div>
-        <%= f.label :title_cont, "イベント名", class: "text-xs text-slate-600" %>
-        <%= f.search_field :title_cont, class: "w-full rounded-md border px-3 py-2 text-sm" %>
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div>
+          <%= f.label :title_cont, "イベント名", class: "text-xs font-semibold text-slate-600" %>
+          <%= f.search_field :title_cont,
+                placeholder: "例：ハウストーナメント",
+                class: "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+        </div>
+
+        <div>
+          <%= f.label :shop_name_cont, "店舗名", class: "text-xs font-semibold text-slate-600" %>
+          <%= f.search_field :shop_name_cont,
+                placeholder: "例：Darts Bar ○○",
+                class: "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+        </div>
+
+        <div>
+          <%= f.label :shop_prefecture_eq, "都道府県", class: "text-xs font-semibold text-slate-600" %>
+          <%= f.search_field :shop_prefecture_eq,
+                placeholder: "例：宮崎県",
+                class: "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+        </div>
+
+        <div>
+          <%= f.label :start_datetime_gteq, "開催日（開始）", class: "text-xs font-semibold text-slate-600" %>
+          <%= f.date_field :start_datetime_gteq,
+                class: "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+        </div>
+
+        <div>
+          <%= f.label :start_datetime_lteq, "開催日（終了）", class: "text-xs font-semibold text-slate-600" %>
+          <%= f.date_field :start_datetime_lteq,
+                class: "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+        </div>
+
+        <div>
+          <%= f.label :participants_id_eq, "参加プロ", class: "text-xs font-semibold text-slate-600" %>
+          <%= f.select :participants_id_eq,
+                options_from_collection_for_select(@pros, :id, :name, @q.participants_id_eq),
+                { include_blank: "選択なし" },
+                class: "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+        </div>
       </div>
 
-      <div>
-        <%= f.label :shop_name_cont, "店舗名", class: "text-xs text-slate-600" %>
-        <%= f.search_field :shop_name_cont, class: "w-full rounded-md border px-3 py-2 text-sm" %>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <%= f.submit "検索", class: "rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800" %>
+        <%= link_to "クリア", events_path, class: "rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50" %>
       </div>
-
-      <div>
-        <%= f.label :shop_prefecture_eq, "都道府県", class: "text-xs text-slate-600" %>
-        <%= f.search_field :shop_prefecture_eq, placeholder: "例：宮崎県", class: "w-full rounded-md border px-3 py-2 text-sm" %>
-      </div>
-
-      <div>
-        <%= f.label :start_datetime_gteq, "開催日（開始）", class: "text-xs text-slate-600" %>
-        <%= f.date_field :start_datetime_gteq, class: "w-full rounded-md border px-3 py-2 text-sm" %>
-      </div>
-
-      <div>
-        <%= f.label :start_datetime_lteq, "開催日（終了）", class: "text-xs text-slate-600" %>
-        <%= f.date_field :start_datetime_lteq, class: "w-full rounded-md border px-3 py-2 text-sm" %>
-      </div>
-
-      <div>
-        <%= f.label :participants_id_eq, "参加プロ", class: "text-xs text-slate-600" %>
-        <%= f.select :participants_id_eq,
-              options_from_collection_for_select(@pros, :id, :name, @q.participants_id_eq),
-              { include_blank: "選択なし" },
-              class: "w-full rounded-md border px-3 py-2 text-sm" %>
-      </div>
-    </div>
-
-    <div class="mt-4 flex gap-2">
-      <%= f.submit "検索", class: "rounded-md bg-black px-4 py-2 text-sm font-semibold text-white" %>
-      <%= link_to "クリア", events_path, class: "rounded-md border px-4 py-2 text-sm font-semibold" %>
     </div>
   <% end %>
-  <h1 class="text-2xl font-bold mb-6">イベント一覧</h1>
+
+  <div class="flex items-end justify-between mb-6 mt-8">
+    <h1 class="text-2xl font-bold">イベント一覧</h1>
+    <p class="text-xs text-slate-500"><%= @events.total_count %>件</p>
+  </div>
 
   <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
     <% @events.each do |event| %>
-      <%= link_to event_path(event), class: "block group rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow" do %>
+      <div class="group rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden
+                  transition-all hover:shadow-md hover:-translate-y-0.5 hover:ring-1 hover:ring-slate-200">
+
         <div class="relative h-44 w-full overflow-hidden">
           <% if event.images.attached? %>
             <% main_image = event.images.first %>
             <%= image_tag main_image.variant(resize_to_fill: [800, 400]),
-                  class: "h-full w-full object-cover transition-transform duration-200 group-hover:scale-105" %>
+                  class: "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" %>
           <% else %>
             <div class="h-full w-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-400 text-sm">
               No Image
             </div>
           <% end %>
+
+          <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-black/0 to-black/0 pointer-events-none"></div>
+
+          <div class="absolute top-3 right-3 z-10">
+            <div class="rounded-full bg-white/90 backdrop-blur border border-slate-200 shadow-sm
+                        hover:bg-white transition">
+              <% favorite = user_signed_in? ? current_user.favorites.find_by(favoritable: event) : nil %>
+              <%= render "favorites/button", favoritable: event, favorite: favorite %>
+            </div>
+          </div>
         </div>
 
         <div class="px-4 pb-4 pt-3">
-          <span class="inline-flex items-center rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-500">
-            トーナメント
-          </span>
+          <div class="flex items-center justify-between gap-2">
+            <span class="inline-flex items-center rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-600">
+              トーナメント
+            </span>
 
-          <h2 class="mt-2 text-[15px] font-semibold text-slate-900 leading-snug line-clamp-2 group-hover:underline">
-            <%= event.title %>
-          </h2>
-
-          <div class="space-y-1.5 text-xs text-slate-600 my-3">
-            <p class="flex items-center gap-1.5">
-              📅 <%= event.start_datetime ? l(event.start_datetime, format: :short) : "日時未定" %>
-            </p>
-            <p class="flex items-center gap-1.5">
-              📍 <%= event.location.presence || event.shop&.name || "会場未定" %>
-            </p>
+            <span class="inline-flex items-center max-w-[160px] rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-600 border border-slate-100 truncate">
+              🏠 <%= event.shop&.name || "店舗未登録" %>
+            </span>
           </div>
 
-          <% if event.description.present? %>
-            <p class="text-xs text-slate-500 mb-3 line-clamp-2">
-              <%= event.description %>
-            </p>
+          <%= link_to event_path(event), class: "block" do %>
+            <h2 class="mt-2 text-[15px] font-semibold text-slate-900 leading-snug line-clamp-2 group-hover:underline">
+              <%= event.title %>
+            </h2>
+
+            <div class="mt-3 space-y-1.5 text-xs text-slate-600">
+              <p class="flex items-center gap-1.5">
+                📅 <%= event.start_datetime ? l(event.start_datetime, format: :short) : "日時未定" %>
+              </p>
+              <p class="flex items-center gap-1.5">
+                📍 <%= event.location.presence || event.shop&.name || "会場未定" %>
+              </p>
+            </div>
+
+            <% if event.description.present? %>
+              <p class="mt-3 text-xs text-slate-500 line-clamp-2">
+                <%= event.description %>
+              </p>
+            <% end %>
+
+            <div class="mt-4 flex items-center justify-between text-[11px] text-slate-500">
+              <span class="inline-flex items-center gap-1">
+                👥 <%= event.capacity || "未設定" %>人
+              </span>
+              <span class="text-slate-400 group-hover:text-slate-600 transition">
+                詳細 →
+              </span>
+            </div>
           <% end %>
-
-          <div class="flex items-center justify-between text-[11px] text-slate-500">
-            <span>👥 <%= event.capacity || "未設定" %>人</span>
-            <span>🏠 <%= event.shop&.name || "店舗未登録" %></span>
-          </div>
-
         </div>
-      <% end %>
+      </div>
     <% end %>
   </div>
+
   <div class="mt-8 flex justify-center">
     <%= paginate @events, params: @pagination_params %>
   </div>

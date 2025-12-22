@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :events, through: :shops
   has_many :event_participants, dependent: :destroy
   has_many :participating_events, through: :event_participants, source: :event
+  has_many :favorites, dependent: :destroy
 
   def shop_owner?
     shops.exists?

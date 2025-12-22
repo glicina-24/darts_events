@@ -2,6 +2,8 @@ class Shop < ApplicationRecord
   belongs_to :user
 
   has_many :events, dependent: :destroy
+  has_many :favorites, as: :favoritable, dependent: :destroy
+
   has_many_attached :images
 
   validates :images,
@@ -29,5 +31,10 @@ class Shop < ApplicationRecord
 
   def self.ransackable_associations(_auth_object = nil)
     %w[user events]
+  end
+
+  def favorited_by?(user)
+    return false unless user
+    favorites.exists?(user_id: user.id)
   end
 end
