@@ -15,6 +15,12 @@ Rails.application.routes.draw do
     delete "images/:image_id", to: "shops#destroy_image", as: :image, on: :member
   end
 
+  resources :notifications, only: %i[index] do
+    member do
+      patch :read # 既読にして飛ばす用
+    end
+  end
+
   get "up" => "rails/health#show", as: :rails_health_check
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest

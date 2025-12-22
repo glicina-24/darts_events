@@ -23,9 +23,6 @@
     </div>
 
     <nav class="hidden md:flex items-center gap-2 text-xs ml-auto">
-      <%= link_to "詳細検索",
-            events_path,
-            class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
 
       <%= link_to "イベント一覧",
             events_path,
@@ -39,6 +36,20 @@
             new_shop_path,
             class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
 
+      <%= link_to notifications_path,
+            class: "relative inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50 text-xs" do %>
+
+        <span>通知</span>
+
+        <% if @unread_notifications_count.to_i > 0 %>
+          <span class="absolute -top-2 -right-2 min-w-[18px] h-[18px]
+                      rounded-full bg-red-500 text-white text-[10px]
+                      flex items-center justify-center font-bold">
+            <%= @unread_notifications_count > 99 ? "99+" : @unread_notifications_count %>
+          </span>
+        <% end %>
+
+      <% end %>
       <% if user_signed_in? %>
         <%= link_to "マイページ",
               mypage_path,
@@ -88,23 +99,22 @@
             class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
       <%= link_to "店舗登録", new_shop_path,
             class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
-
-      <div class="mt-2 pt-2 border-t border-slate-200">
-        <% if user_signed_in? %>
-          <%= link_to "マイページ", root_path,
-                class: "block py-2 text-slate-700 hover:bg-slate-50" %>
-          <%= button_to "ログアウト",
-                destroy_user_session_path,
-                method: :delete,
-                form: { data: { turbo_confirm: "ログアウトしますか？" } },
-                class: "block w-full text-left py-2 text-slate-700 hover:bg-slate-50" %>
-        <% else %>
-          <%= link_to "新規登録", new_user_registration_path,
-                class: "block py-2 text-slate-700 hover:bg-slate-50" %>
-          <%= link_to "ログイン", new_user_session_path,
-                class: "block py-2 text-white bg-black rounded-md text-center mt-1 hover:bg-slate-800" %>
-        <% end %>
-      </div>
+      <%= link_to "通知", notifications_path,
+            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
+      <% if user_signed_in? %>
+        <%= link_to "マイページ", root_path,
+            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
+        <%= button_to "ログアウト",
+              destroy_user_session_path,
+              method: :delete,
+              form: { data: { turbo_confirm: "ログアウトしますか？" } },
+              class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
+      <% else %>
+        <%= link_to "新規登録", new_user_registration_path,
+              class: "block py-2 text-slate-700 hover:bg-slate-50" %>
+        <%= link_to "ログイン", new_user_session_path,
+              class: "block py-2 text-white bg-black rounded-md text-center mt-1 hover:bg-slate-800" %>
+      <% end %>
     </nav>
   </div>
 </header>

@@ -9,6 +9,11 @@ class User < ApplicationRecord
   has_many :participating_events, through: :event_participants, source: :event
   has_many :favorites, dependent: :destroy
 
+  has_many :received_notifications,
+            class_name: "Notification",
+            foreign_key: :recipient_id,
+            dependent: :destroy
+
   def shop_owner?
     shops.exists?
   end

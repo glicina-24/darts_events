@@ -1,0 +1,49 @@
+<div class="max-w-3xl mx-auto px-4 py-8">
+  <div class="flex items-end justify-between mb-6">
+    <h1 class="text-2xl font-bold">通知</h1>
+    <p class="text-xs text-slate-500"><%= @notifications.total_count %>件</p>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <% if @notifications.any? %>
+      <ul class="divide-y divide-slate-100">
+        <% @notifications.each do |n| %>
+          <li class="<%= n.read_at ? 'bg-white' : 'bg-amber-50/40' %>">
+            <%= link_to read_notification_path(n),
+                  data: { turbo_method: :patch },
+                  class: "block px-4 py-4 hover:bg-slate-50 transition" do %>
+
+              <div class="flex items-start gap-3">
+                <div class="mt-1 h-2.5 w-2.5 rounded-full <%= n.read_at ? 'bg-slate-200' : 'bg-rose-500' %>"></div>
+
+                <div class="flex-1">
+                  <p class="text-sm text-slate-800 font-medium">
+                    <%= n.message %>
+                  </p>
+
+                  <p class="text-xs text-slate-500 mt-1">
+                    <%= l n.created_at, format: :short %>
+                    <% if n.notifiable_type.present? %>
+                      ・<%= n.notifiable_type %>
+                    <% end %>
+                  </p>
+                </div>
+
+                <span class="text-xs text-slate-400">→</span>
+              </div>
+
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <div class="px-6 py-10 text-center text-slate-500 text-sm">
+        通知はまだないよ
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-8 flex justify-center">
+    <%= paginate @notifications %>
+  </div>
+</div>

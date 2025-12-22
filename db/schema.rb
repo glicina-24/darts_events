@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_22_031109) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_22_091724) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -54,24 +54,23 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_22_031109) do
 
   create_table "events", force: :cascade do |t|
     t.bigint "shop_id", null: false
-    t.string "title", null: false
+    t.string "title"
     t.text "description"
-    t.datetime "start_datetime", null: false
+    t.datetime "start_datetime"
     t.datetime "end_datetime"
-    t.datetime "entry_deadline"
     t.string "location"
     t.string "address"
     t.string "prefecture"
     t.string "city"
-    t.decimal "latitude", precision: 10, scale: 6
-    t.decimal "longitude", precision: 10, scale: 6
+    t.decimal "latitude"
+    t.decimal "longitude"
     t.integer "fee"
     t.integer "capacity"
-    t.integer "status", default: 0, null: false
+    t.datetime "entry_deadline"
+    t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["shop_id"], name: "index_events_on_shop_id"
-    t.index ["start_datetime"], name: "index_events_on_start_datetime"
   end
 
   create_table "favorites", force: :cascade do |t|
@@ -83,6 +82,20 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_22_031109) do
     t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable"
     t.index ["user_id", "favoritable_type", "favoritable_id"], name: "index_favorites_uniqueness", unique: true
     t.index ["user_id"], name: "index_favorites_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "recipient_id", null: false
+    t.bigint "actor_id", null: false
+    t.string "action", null: false
+    t.string "notifiable_type", null: false
+    t.bigint "notifiable_id", null: false
+    t.datetime "read_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_notifications_on_actor_id"
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["recipient_id"], name: "index_notifications_on_recipient_id"
   end
 
   create_table "shops", force: :cascade do |t|
@@ -127,5 +140,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_22_031109) do
   add_foreign_key "event_participants", "users"
   add_foreign_key "events", "shops"
   add_foreign_key "favorites", "users"
+  add_foreign_key "notifications", "users", column: "actor_id"
+  add_foreign_key "notifications", "users", column: "recipient_id"
   add_foreign_key "shops", "users"
 end
