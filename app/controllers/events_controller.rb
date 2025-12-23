@@ -24,6 +24,7 @@ class EventsController < ApplicationController
     @event = @shop.events.build(event_params)
 
     if @event.save
+      create_new_event_notifications!(@event)
       redirect_to @event, notice: "イベントを投稿しました。"
     else
       flash.now[:alert] = "イベントの投稿に失敗しました。入力内容を確認してください。"
@@ -110,5 +111,28 @@ class EventsController < ApplicationController
       :start_datetime_lteq,
       :participants_id_eq
     )
+  end
+
+  def create_new_event_notifications!(event)
+    shop = event.shop
+
+    # 店舗をお気に入りしてるユーザー（店主自身は除外）
+    user_ids = Favorite.where(favoritable: shop).where.not(user_id: shop.user_id).pluck(:user_id)
+
+    # 通知をまとめて作る（N件create!より速い）
+    now = Time.current
+    rows = user_ids.map do |uid|
+      {
+        recipient_id: uid,
+        actor_id: shop.user_id,        # 店主をactorにする
+        action: "new_event",
+        notifiable_type: "Event",
+        notifiable_id: event.id,
+        created_at: now,
+        updated_at: now
+      }
+    end
+
+    Notification.insert_all!(rows) if rows.any?
   end
 end
