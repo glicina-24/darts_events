@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :hide_flash_on_some_pages
   before_action :hide_header_on_some_pages
+  before_action :set_unread_notifications_count
 
   protected
 
@@ -28,5 +29,11 @@ class ApplicationController < ActionController::Base
     if devise_controller? && %w[sessions registrations].include?(controller_name) && action_name == "new"
       @disable_header = true
     end
+  end
+
+  def set_unread_notifications_count
+    return unless user_signed_in?
+
+    @unread_notifications_count = Notification.where(recipient: current_user, read_at: nil).count
   end
 end
