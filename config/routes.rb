@@ -19,6 +19,9 @@ Rails.application.routes.draw do
     member do
       patch :read # 既読にして飛ばす用
     end
+    collection do
+      patch :read_all   # 全部既読
+    end
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
