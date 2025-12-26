@@ -11,7 +11,7 @@
 
 <% if event.shop.present? %>
   <p class="text-center text-slate-500 mb-8">
-    主催店舗：<strong><%= event.shop.name %></strong>
+    主催者：<strong><%= event.shop.user.name %></strong>
   </p>
 <% end %>
 
@@ -41,11 +41,17 @@
     </div>
 
     <div>
-      <%= f.label :location, "開催場所（表示名）", class: "block text-sm font-medium text-slate-700 mb-1" %>
-      <%= f.text_field :location,
-            placeholder: event.shop&.name,
-            class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
-                  focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+      <%= f.label :shop_id, "開催場所（店舗）", class: "block text-sm font-medium text-slate-700 mb-1" %>
+
+      <%= f.select :shop_id,
+            options_from_collection_for_select(@owned_shops, :id, :name, event.shop_id),
+            { include_blank: "選択してください" },
+            class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm
+                    focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+
+      <p class="mt-1 text-xs text-slate-500">
+        ※ 登録している店舗から選択できます
+      </p>
     </div>
 
     <div>

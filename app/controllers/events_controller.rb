@@ -4,23 +4,42 @@ class EventsController < ApplicationController
   before_action :require_shop_owner, only: [ :new, :create ]
   before_action :set_shop_for_event, only: [ :new, :create ]
   before_action :authorize_event_owner!, only: [ :edit, :update, :destroy ]
+  before_action :set_owned_shops, only: %i[new create edit update]
 
-  def index
-    @q = Event.ransack(params[:q])
-    @events = @q.result.includes(:shop, participants: []).order(start_datetime: :asc).page(params[:page]).per(12)
-    @pros = User.approved_pros.order(:name)
 
-    @pagination_params = { q: q_params.to_h }
+def index
+  @q = Event.ransack(params[:q])
+  @events = @q.result
+    .includes(:shop, participants: [], images_attachments: :blob)
+    .order(start_datetime: :asc)
+    .page(params[:page]).per(12)
+
+  @pros = User.approved_pros.order(:name)
+  @pagination_params = { q: q_params.to_h }
+
+  if user_signed_in?
+    @favorites_by_event_id = current_user.favorites
+      .where(favoritable_type: "Event", favoritable_id: @events.map(&:id))
+      .index_by(&:favoritable_id)
+  else
+    @favorites_by_event_id = {}
   end
+end
 
   def show
   end
 
   def new
-    @event = @shop.events.build
+    @event = Event.new
   end
 
   def create
+    @shop = current_user.shops.find_by(id: params[:event][:shop_id])
+
+    unless @shop
+      redirect_to events_path, alert: "不正な店舗が指定されました。"
+      return
+    end
     @event = @shop.events.build(event_params)
 
     if @event.save
@@ -63,11 +82,11 @@ class EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(
+      :shop_id,
       :title,
       :description,
       :start_datetime,
       :end_datetime,
-      :location,
       :address,
       :prefecture,
       :city,
@@ -91,10 +110,15 @@ class EventsController < ApplicationController
   end
 
   def set_shop_for_event
-    @shop = current_user.shops.first
-    if @shop.nil?
+    return if action_name.in?(%w[edit update])
+
+    if current_user.shops.empty?
       redirect_to new_shop_path, alert: "まず店舗を登録してください。"
     end
+  end
+
+  def set_owned_shops
+    @owned_shops = current_user.shops.order(:name)
   end
 
   def authorize_event_owner!
