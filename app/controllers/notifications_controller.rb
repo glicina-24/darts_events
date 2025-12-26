@@ -17,6 +17,11 @@ class NotificationsController < ApplicationController
     redirect_to redirect_path_for(notification)
   end
 
+  def read_all
+    current_user.received_notifications.unread.update_all(read_at: Time.current)
+    redirect_to notifications_path, notice: "通知を既読にしました。"
+  end
+
   private
 
   def redirect_path_for(notification)
