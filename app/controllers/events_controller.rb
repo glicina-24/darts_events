@@ -7,24 +7,24 @@ class EventsController < ApplicationController
   before_action :set_owned_shops, only: %i[new create edit update]
 
 
-def index
-  @q = Event.ransack(params[:q])
-  @events = @q.result
-    .includes(:shop, participants: [], images_attachments: :blob)
-    .order(start_datetime: :asc)
-    .page(params[:page]).per(12)
+  def index
+    @q = Event.ransack(params[:q])
+    @events = @q.result
+      .includes(:shop, participants: [], images_attachments: :blob)
+      .order(start_datetime: :asc)
+      .page(params[:page]).per(12)
 
-  @pros = User.approved_pros.order(:name)
-  @pagination_params = { q: q_params.to_h }
+    @pros = User.approved_pros.order(:name)
+    @pagination_params = { q: q_params.to_h }
 
-  if user_signed_in?
-    @favorites_by_event_id = current_user.favorites
-      .where(favoritable_type: "Event", favoritable_id: @events.map(&:id))
-      .index_by(&:favoritable_id)
-  else
-    @favorites_by_event_id = {}
+    if user_signed_in?
+      @favorites_by_event_id = current_user.favorites
+        .where(favoritable_type: "Event", favoritable_id: @events.map(&:id))
+        .index_by(&:favoritable_id)
+    else
+      @favorites_by_event_id = {}
+    end
   end
-end
 
   def show
   end
