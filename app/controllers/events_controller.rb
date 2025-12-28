@@ -143,12 +143,11 @@ end
     # 店舗をお気に入りしてるユーザー（店主自身は除外）
     user_ids = Favorite.where(favoritable: shop).where.not(user_id: shop.user_id).pluck(:user_id)
 
-    # 通知をまとめて作る（N件create!より速い）
     now = Time.current
     rows = user_ids.map do |uid|
       {
         recipient_id: uid,
-        actor_id: shop.user_id,        # 店主をactorにする
+        actor_id: shop.user_id,
         action: "new_event",
         notifiable_type: "Event",
         notifiable_id: event.id,
