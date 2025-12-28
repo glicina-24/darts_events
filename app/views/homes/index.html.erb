@@ -61,56 +61,60 @@
           <h2 class="text-2xl font-bold">Top Pick!</h2>
           <p class="text-sm text-slate-500 mt-1">注目イベントをピックアップ</p>
         </div>
+
         <%= link_to "もっと見る →",
               events_path,
               class: "text-sm font-semibold text-slate-700 hover:underline" %>
       </div>
 
-      <% list = defined?(@top_events) && @top_events.present? ? @top_events : [nil, nil, nil] %>
+      <% if @top_events.present? %>
+        <div class="grid gap-6 md:grid-cols-3">
+          <% @top_events.each do |event| %>
+            <%= link_to event_path(event),
+                  class: "group block rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-sky-500" do %>
 
-      <div class="grid gap-6 md:grid-cols-3">
-        <% list.first(3).each do |event| %>
-          <div class="group rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-            <div class="relative h-36 w-full overflow-hidden">
-              <% if event&.respond_to?(:images) && event.images.attached? %>
-                <% img = event.images.first %>
-                <%= image_tag img.variant(resize_to_fill: [800, 360]),
-                      class: "h-full w-full object-cover transition-transform duration-200 group-hover:scale-105" %>
-              <% else %>
-                <div class="h-full w-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-400 text-3xl">
-                  🖼
-                </div>
-              <% end %>
-            </div>
-
-            <div class="p-4">
-              <p class="text-sm font-semibold text-slate-900 line-clamp-2">
-                <%= event ? event.title : "イベントタイトルが入ります" %>
-              </p>
-
-              <div class="mt-2 space-y-1 text-xs text-slate-600">
-                <p>🏠 <%= event&.shop&.name || "店舗名" %></p>
-                <p>📅 <%= event&.start_datetime ? l(event.start_datetime, format: :short) : "開催日" %></p>
-                <p>📍 <%= event&.prefecture.presence || "都道府県" %></p>
-              </div>
-
-              <div class="mt-3 flex items-center justify-between">
-                <span class="text-[11px] text-slate-500">
-                  👥 <%= event&.capacity.present? ? "#{event.capacity}人" : "定員未設定" %>
-                </span>
-
-                <% if event %>
-                  <%= link_to "詳細 →",
-                        event_path(event),
-                        class: "text-xs font-semibold text-sky-600 hover:underline" %>
+              <div class="relative h-36 w-full overflow-hidden">
+                <% if event.images.attached? %>
+                  <% img = event.images.first %>
+                  <%= image_tag img.variant(resize_to_fill: [800, 360]),
+                        class: "h-full w-full object-cover transition-transform duration-200 group-hover:scale-105" %>
                 <% else %>
-                  <span class="text-xs font-semibold text-slate-400">詳細 →</span>
+                  <div class="h-full w-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-400 text-3xl">
+                    🖼
+                  </div>
                 <% end %>
               </div>
-            </div>
-          </div>
-        <% end %>
-      </div>
+
+              <div class="p-4">
+                <p class="text-sm font-semibold text-slate-900 line-clamp-2">
+                  <%= event.title %>
+                </p>
+
+                <div class="mt-2 space-y-1 text-xs text-slate-600">
+                  <p>🏠 <%= event.shop&.name || "店舗未登録" %></p>
+                  <p>📅 <%= event.start_datetime ? l(event.start_datetime, format: :short) : "日時未定" %></p>
+                  <p>📍 <%= event.prefecture.presence || event.shop&.prefecture.presence || "未設定" %></p>
+                </div>
+
+                <div class="mt-3 flex items-center justify-between">
+                  <span class="text-[11px] text-slate-500">
+                    👥 <%= event.capacity.present? ? "#{event.capacity}人" : "定員未設定" %>
+                  </span>
+
+                  <span class="text-xs font-semibold text-sky-600">
+                    詳細 →
+                  </span>
+                </div>
+              </div>
+
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 text-sm text-slate-500">
+          まだイベントがないよ。最初のイベントを投稿してみて！
+        </div>
+      <% end %>
 
       <!-- CTA strip -->
       <div class="mt-10 rounded-2xl bg-white border border-slate-200 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

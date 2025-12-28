@@ -4,8 +4,7 @@ class EventsController < ApplicationController
   before_action :require_shop_owner, only: [ :new, :create ]
   before_action :set_shop_for_event, only: [ :new, :create ]
   before_action :authorize_event_owner!, only: [ :edit, :update, :destroy ]
-  before_action :set_owned_shops, only: %i[new create edit update]
-
+  before_action :set_owned_shops, only: [ :new, :create, :edit, :update ]
 
   def index
     @q = Event.ransack(params[:q])
