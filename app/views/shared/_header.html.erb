@@ -24,7 +24,7 @@
 
     <nav class="hidden md:flex items-center gap-2 text-xs ml-auto">
 
-      <%= link_to "イベント一覧",
+      <%= link_to "イベント一覧/検索",
             events_path,
             class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
 
@@ -88,12 +88,10 @@
   <div
     data-menu-target="panel"
     class="fixed inset-y-0 right-0 z-40 w-64 max-w-[75%] bg-white shadow-lg
-           transform translate-x-full transition-transform duration-400 md:hidden"
+          transform translate-x-full transition-transform duration-400 md:hidden"
   >
     <nav class="h-full px-4 py-4 flex flex-col gap-2 text-sm">
-      <%= link_to "詳細検索", events_path,
-            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
-      <%= link_to "イベント一覧", events_path,
+      <%= link_to "イベント一覧/検索", events_path,
             class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
       <%= link_to "店舗一覧", shops_path,
             class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>

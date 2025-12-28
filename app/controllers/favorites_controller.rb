@@ -5,8 +5,6 @@ class FavoritesController < ApplicationController
   def create
     favorite = current_user.favorites.find_or_create_by!(favoritable: @favoritable)
 
-    create_favorite_notification!(@favoritable)
-
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(
@@ -45,22 +43,5 @@ class FavoritesController < ApplicationController
       else
         raise ActiveRecord::RecordNotFound
       end
-  end
-
-  def create_favorite_notification!(favoritable)
-    recipient =
-      case favoritable
-      when Event then favoritable.shop.user
-      when Shop  then favoritable.user
-      end
-
-    return if recipient.nil? || recipient == current_user
-
-    Notification.create!(
-      recipient: recipient,
-      actor: current_user,
-      action: "favorited",
-      notifiable: favoritable
-    )
   end
 end

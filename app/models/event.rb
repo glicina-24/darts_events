@@ -14,7 +14,7 @@ class Event < ApplicationRecord
     size: { less_than: 5.megabytes },
     limit: { max: 5 }
 
-  enum status: { scheduled: 0, finished: 1, canceled: 2 }, _default: :scheduled
+  enum :status, { scheduled: 0, finished: 1, canceled: 2 }, default: :scheduled
 
   def owned_by?(user)
     shop.user == user
