@@ -54,23 +54,24 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_23_145831) do
 
   create_table "events", force: :cascade do |t|
     t.bigint "shop_id", null: false
-    t.string "title"
+    t.string "title", null: false
     t.text "description"
-    t.datetime "start_datetime"
+    t.datetime "start_datetime", null: false
     t.datetime "end_datetime"
+    t.datetime "entry_deadline"
     t.string "location"
     t.string "address"
     t.string "prefecture"
     t.string "city"
-    t.decimal "latitude"
-    t.decimal "longitude"
+    t.decimal "latitude", precision: 10, scale: 6
+    t.decimal "longitude", precision: 10, scale: 6
     t.integer "fee"
     t.integer "capacity"
-    t.datetime "entry_deadline"
-    t.integer "status"
+    t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["shop_id"], name: "index_events_on_shop_id"
+    t.index ["start_datetime"], name: "index_events_on_start_datetime"
   end
 
   create_table "favorites", force: :cascade do |t|
