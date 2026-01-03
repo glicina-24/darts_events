@@ -51,7 +51,7 @@
     </div>
   <% end %>
 
-<div class="flex items-end justify-between mb-6 mt-8">
+  <div class="flex items-end justify-between mb-6 mt-8">
     <h1 class="text-2xl font-bold">イベント一覧</h1>
     <p class="text-xs text-slate-500"><%= @events.total_count %>件</p>
   </div>
@@ -75,11 +75,8 @@
           <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-black/0 to-black/0 pointer-events-none"></div>
 
           <div class="absolute top-3 right-3 z-10">
-            <div class="rounded-full bg-white/90 backdrop-blur border border-slate-200 shadow-sm
-                        hover:bg-white transition">
-              <% favorite = user_signed_in? ? @favorites_by_event_id[event.id] : nil %>
-              <%= render "favorites/button", favoritable: event, favorite: favorite %>
-            </div>
+            <% favorite = user_signed_in? ? @favorites_by_event_id[event.id] : nil %>
+            <%= render "favorites/button", favoritable: event, favorite: favorite %>
           </div>
         </div>
 

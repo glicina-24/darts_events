@@ -1,29 +1,56 @@
-<div class="max-w-6xl mx-auto px-4 py-8">
-  <div class="flex items-end justify-between mb-6">
-    <div>
-      <h1 class="text-2xl font-bold">マイページ</h1>
-      <p class="text-sm text-slate-500 mt-1">
-        <%= current_user.name %>（<%= current_user.email %>）
-      </p>
+<div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- プロフィール -->
+    <div class="lg:col-span-2 rounded-2xl bg-white border border-slate-200 p-6">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <h1 class="text-xl font-bold leading-tight">
+            <%= current_user.name %>
+          </h1>
+          <p class="text-xs text-slate-500">
+            <%= current_user.email %>
+          </p>
+        </div>
+
+        <%= link_to "プロフィール変更",
+              edit_user_registration_path,
+              class: "shrink-0 inline-flex items-center rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50" %>
+      </div>
     </div>
 
-    <%= link_to "プロフィール変更",
-          edit_user_registration_path,
-          class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50" %>
-  </div>
+    <!-- プロ申請 -->
+    <div class="rounded-2xl bg-white border border-slate-200 p-4">
+      <p class="text-sm font-semibold text-slate-900">プロ申請</p>
+      <p class="mt-1 text-xs text-slate-500 leading-relaxed">
+        SNSリンクを送って審査→承認されたら「参加プロ」検索欄に追加されます。
+      </p>
 
-  <!-- タブ -->
-  <div class="mb-6">
-    <div class="inline-flex rounded-full bg-slate-200 p-1 text-sm">
-      <a href="#favorites" class="px-4 py-2 rounded-full bg-white shadow-sm">お気に入り</a>
-      <a href="#notifications" class="px-4 py-2 rounded-full text-slate-600 hover:bg-white/60">通知設定</a>
+      <div class="mt-4">
+        <% if current_user.unapplied? || current_user.rejected? %>
+          <%= link_to "申請する", new_pro_application_path,
+                class: "inline-flex items-center justify-center w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800" %>
+          <% if current_user.rejected? %>
+            <p class="mt-2 text-[11px] text-rose-600">前回は差し戻し。内容を見直して再申請できるよ。</p>
+          <% end %>
+        <% elsif current_user.pending? %>
+          <div class="w-full rounded-lg bg-amber-50 border border-amber-200 px-4 py-2 text-sm font-semibold text-amber-700 text-center">
+            審査中
+          </div>
+        <% elsif current_user.approved? %>
+          <div class="w-full rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-700 text-center">
+            承認済み
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
 
   <!-- お気に入り -->
   <section id="favorites" class="space-y-10">
     <div>
-      <h2 class="text-lg font-semibold mb-3">お気に入りイベント</h2>
+      <div class="flex items-end justify-between mb-3">
+        <h2 class="text-lg font-semibold">お気に入りイベント</h2>
+      </div>
 
       <% if @favorite_events.any? %>
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -32,13 +59,13 @@
               <div class="relative h-40 w-full overflow-hidden">
                 <% if event.images.attached? %>
                   <%= image_tag event.images.first.variant(resize_to_fill: [800, 400]),
-                        class: "h-full w-full object-cover group-hover:scale-105 transition-transform" %>
+                        class: "h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" %>
                 <% else %>
                   <div class="h-full w-full bg-slate-100 flex items-center justify-center text-slate-400 text-sm">No Image</div>
                 <% end %>
 
                 <div class="absolute top-3 right-3 z-10">
-                  <% favorite = current_user.favorites.find_by(favoritable: event) %>
+                  <% favorite = @favorites_by_event_id[event.id] %>
                   <%= render "favorites/button", favoritable: event, favorite: favorite %>
                 </div>
               </div>
@@ -46,24 +73,27 @@
               <div class="p-4">
                 <%= link_to event_path(event), class: "block" do %>
                   <p class="text-sm font-semibold line-clamp-2 group-hover:underline"><%= event.title %></p>
+                  <div class="mt-2 text-xs text-slate-600 space-y-1">
+                    <p>🏠 <%= event.shop&.name %></p>
+                    <p>📅 <%= event.start_datetime ? l(event.start_datetime, format: :short) : "日時未定" %></p>
+                    <p>📍 <%= event.location.presence || event.shop&.name || "会場未定" %></p>
+                  </div>
                 <% end %>
-
-                <div class="mt-2 text-xs text-slate-600 space-y-1">
-                  <p>🏠 <%= event.shop&.name %></p>
-                  <p>📅 <%= event.start_datetime ? l(event.start_datetime, format: :short) : "日時未定" %></p>
-                  <p>📍 <%= event.location.presence || event.shop&.name || "会場未定" %></p>
-                </div>
               </div>
             </div>
           <% end %>
         </div>
       <% else %>
-        <p class="text-sm text-slate-500">お気に入りイベントはまだありません。</p>
+        <div class="rounded-2xl bg-white border border-slate-200 p-6 text-sm text-slate-500">
+          お気に入りイベントはまだありません。
+        </div>
       <% end %>
     </div>
 
     <div>
-      <h2 class="text-lg font-semibold mb-3">お気に入り店舗</h2>
+      <div class="flex items-end justify-between mb-3">
+        <h2 class="text-lg font-semibold">お気に入り店舗</h2>
+      </div>
 
       <% if @favorite_shops.any? %>
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -72,13 +102,13 @@
               <div class="relative h-40 w-full overflow-hidden">
                 <% if shop.images.attached? %>
                   <%= image_tag shop.images.first.variant(resize_to_fill: [800, 400]),
-                        class: "h-full w-full object-cover group-hover:scale-105 transition-transform" %>
+                        class: "h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" %>
                 <% else %>
                   <div class="h-full w-full bg-slate-100 flex items-center justify-center text-slate-400 text-sm">No Image</div>
                 <% end %>
 
                 <div class="absolute top-3 right-3 z-10">
-                  <% favorite = current_user.favorites.find_by(favoritable: shop) %>
+                  <% favorite = @favorites_by_shop_id[shop.id] %>
                   <%= render "favorites/button", favoritable: shop, favorite: favorite %>
                 </div>
               </div>
@@ -86,40 +116,20 @@
               <div class="p-4">
                 <%= link_to shop_path(shop), class: "block" do %>
                   <p class="text-sm font-semibold line-clamp-2 group-hover:underline"><%= shop.name %></p>
+                  <div class="mt-2 text-xs text-slate-600 space-y-1">
+                    <p>📍 <%= [shop.prefecture, shop.city].compact.join %></p>
+                    <p class="text-slate-500">登録者: <%= shop.user&.name %></p>
+                  </div>
                 <% end %>
-
-                <div class="mt-2 text-xs text-slate-600 space-y-1">
-                  <p>📍 <%= [shop.prefecture, shop.city].compact.join %></p>
-                  <p class="text-slate-500">登録者: <%= shop.user&.name %></p>
-                </div>
               </div>
             </div>
           <% end %>
         </div>
       <% else %>
-        <p class="text-sm text-slate-500">お気に入り店舗はまだありません。</p>
+        <div class="rounded-2xl bg-white border border-slate-200 p-6 text-sm text-slate-500">
+          お気に入り店舗はまだありません。
+        </div>
       <% end %>
-    </div>
-  </section>
-
-  <!-- 通知設定（今はダミー） -->
-  <section id="notifications" class="mt-10">
-    <h2 class="text-lg font-semibold mb-3">通知設定</h2>
-
-    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 text-sm">
-      <label class="flex items-center justify-between">
-        <span>メール通知</span>
-        <input type="checkbox" <%= "checked" if @notification_settings[:email] %> disabled>
-      </label>
-
-      <label class="flex items-center justify-between">
-        <span>プッシュ通知</span>
-        <input type="checkbox" <%= "checked" if @notification_settings[:push] %> disabled>
-      </label>
-
-      <p class="text-xs text-slate-500">
-        ※ ここは後でDB保存＆実装する。今は見た目だけ。
-      </p>
     </div>
   </section>
 </div>
