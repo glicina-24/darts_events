@@ -2,10 +2,7 @@
   <header class="w-full bg-white border-b">
     <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between">
       <%= link_to root_path, class: "flex items-center gap-2" do %>
-        <div class="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center text-xs font-bold">
-          ロゴ
-        </div>
-        <span class="text-sm font-semibold tracking-wide">Darts Events</span>
+        <span class="text-m font-semibold tracking-wide">Darts Events</span>
       <% end %>
 
       <% if user_signed_in? %>
@@ -93,18 +90,29 @@
     </div>
   </main>
 
-  <footer class="bg-white border-t mt-8">
-    <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between text-xs sm:text-sm text-slate-600">
-      <div class="flex items-center gap-2">
-        <div class="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center text-xs font-bold">
-          ロゴ
-        </div>
-      </div>
-      <nav class="flex gap-6">
-        <a href="#" class="hover:underline">利用規約</a>
-        <a href="#" class="hover:underline">お問い合わせ</a>
-        <a href="#" class="hover:underline">プライバシーポリシー</a>
+  <footer class="bg-white border-t">
+  <div class="max-w-6xl mx-auto px-4 py-6 text-xs sm:text-sm text-slate-600">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <%= link_to root_path, class: "flex items-center gap-2" do %>
+        <span class="font-semibold tracking-wide text-slate-700">
+          Darts Events
+        </span>
+      <% end %>  
+
+      <nav class="flex flex-wrap gap-6">
+        <%= link_to "利用規約", terms_path, class: "hover:underline hover:text-slate-800" %>
+        <%= link_to "プライバシーポリシー", privacy_path, class: "hover:underline hover:text-slate-800" %>
+        <%= link_to "お問い合わせ",
+            "https://docs.google.com/forms/d/e/1FAIpQLSdF6YwUpjdKeqf77hfXWhVc4AUY8pCgmrFnL3NF2awASJiRrw/viewform?usp=header",
+            target: "_blank",
+            rel: "noopener",
+            class: "hover:underline hover:text-slate-800" %>
       </nav>
     </div>
-  </footer>
+
+    <div class="mt-6 text-[11px] text-slate-400 text-center sm:text-left">
+      &copy; <%= Time.current.year %> Darts Events. All rights reserved.
+    </div>
+  </div>
+</footer>
 </div>
