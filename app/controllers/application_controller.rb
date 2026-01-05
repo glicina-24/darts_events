@@ -3,6 +3,11 @@ class ApplicationController < ActionController::Base
   before_action :hide_flash_on_some_pages
   before_action :hide_header_on_some_pages
   before_action :set_unread_notifications_count
+  layout :layout_by_resource
+
+  def layout_by_resource
+    devise_controller? ? "devise" : "application"
+  end
 
   rescue_from CanCan::AccessDenied do |_e|
     redirect_to main_app.root_path, alert: "権限がありません"
