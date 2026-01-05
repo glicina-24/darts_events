@@ -1,4 +1,26 @@
 <div class="min-h-screen flex flex-col bg-slate-100">
+  <header class="w-full bg-white border-b">
+    <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between">
+      <%= link_to root_path, class: "flex items-center gap-2" do %>
+        <div class="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center text-xs font-bold">
+          ロゴ
+        </div>
+        <span class="text-sm font-semibold tracking-wide">Darts Events</span>
+      <% end %>
+
+      <% if user_signed_in? %>
+        <%= link_to "マイページ", root_path,
+              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50" %>
+      <% else %>
+        <div class="flex items-center gap-2 text-xs">
+          <%= link_to "新規登録",
+                new_user_registration_path,
+                class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+        </div>
+      <% end %>
+    </div>
+  </header>
+
   <main class="flex-1">
     <div class="max-w-3xl mx-auto px-4 py-10">
       <h1 class="text-center text-3xl font-bold mb-2">ログイン</h1>
@@ -70,4 +92,19 @@
       </div>
     </div>
   </main>
+
+  <footer class="bg-white border-t mt-8">
+    <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between text-xs sm:text-sm text-slate-600">
+      <div class="flex items-center gap-2">
+        <div class="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center text-xs font-bold">
+          ロゴ
+        </div>
+      </div>
+      <nav class="flex gap-6">
+        <a href="#" class="hover:underline">利用規約</a>
+        <a href="#" class="hover:underline">お問い合わせ</a>
+        <a href="#" class="hover:underline">プライバシーポリシー</a>
+      </nav>
+    </div>
+  </footer>
 </div>
