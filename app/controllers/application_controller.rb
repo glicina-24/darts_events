@@ -4,6 +4,10 @@ class ApplicationController < ActionController::Base
   before_action :hide_header_on_some_pages
   before_action :set_unread_notifications_count
 
+  rescue_from CanCan::AccessDenied do |_e|
+    redirect_to main_app.root_path, alert: "権限がありません"
+  end
+
   protected
 
   def configure_permitted_parameters

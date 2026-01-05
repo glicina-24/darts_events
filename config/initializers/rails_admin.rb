@@ -1,4 +1,5 @@
 RailsAdmin.config do |config|
+  config.parent_controller = "ApplicationController"
   config.asset_source = :sprockets
 
   config.authenticate_with do

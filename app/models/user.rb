@@ -41,9 +41,22 @@ class User < ApplicationRecord
 
   before_save :sync_pro_player_flag
 
+  after_update_commit :notify_pro_approved, if: :saved_change_to_pro_player_status?
+
   private
 
   def sync_pro_player_flag
     self.pro_player = approved?
+  end
+
+  def notify_pro_approved
+    return unless approved?
+
+    Notification.create!(
+      recipient: self,
+      actor: nil,
+      action: "pro_approved",
+      notifiable: self
+    )
   end
 end
