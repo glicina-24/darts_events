@@ -9,10 +9,6 @@ class ApplicationController < ActionController::Base
     devise_controller? ? "devise" : "application"
   end
 
-  rescue_from CanCan::AccessDenied do |_e|
-    redirect_to main_app.root_path, alert: "権限がありません"
-  end
-
   protected
 
   def configure_permitted_parameters
