@@ -14,6 +14,10 @@ class User < ApplicationRecord
             foreign_key: :recipient_id,
             dependent: :destroy
 
+  enum :pro_player_status, { unapplied: 0, pending: 1, approved: 2, rejected: 3 }, default: :unapplied
+
+  validates :pro_sns_url, presence: true, if: -> { pro_player_status == "pending" }
+
   def shop_owner?
     shops.exists?
   end
@@ -23,6 +27,7 @@ class User < ApplicationRecord
   end
 
   scope :approved_pros, -> { where(pro_player_status: :approved) }
+  # scope :pro_applicants, -> { where(pro_player_status: :pending) }
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[id name pro_player_status]
@@ -30,5 +35,28 @@ class User < ApplicationRecord
 
   def self.ransackable_associations(_auth_object = nil)
     %w[event_participants participating_events]
+  end
+
+  enum :role, { general: 0, admin: 1 }, default: :general
+
+  before_save :sync_pro_player_flag
+
+  after_update_commit :notify_pro_approved, if: :saved_change_to_pro_player_status?
+
+  private
+
+  def sync_pro_player_flag
+    self.pro_player = approved?
+  end
+
+  def notify_pro_approved
+    return unless approved?
+
+    Notification.create!(
+      recipient: self,
+      actor: nil,
+      action: "pro_approved",
+      notifiable: self
+    )
   end
 end

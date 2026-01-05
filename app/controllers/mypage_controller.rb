@@ -2,23 +2,23 @@ class MypageController < ApplicationController
   before_action :authenticate_user!
 
   def show
-    # N+1避け：イベントは shop まで使うので includes
-    @favorite_events = current_user.favorites
+    favorite_event_records = current_user.favorites
       .where(favoritable_type: "Event")
       .includes(favoritable: { shop: :user })
       .order(created_at: :desc)
-      .map(&:favoritable)
 
-    @favorite_shops = current_user.favorites
+    @favorite_events = favorite_event_records.map(&:favoritable)
+
+    @favorites_by_event_id = favorite_event_records.index_by(&:favoritable_id)
+
+    favorite_shop_records = current_user.favorites
       .where(favoritable_type: "Shop")
       .includes(favoritable: :user)
       .order(created_at: :desc)
-      .map(&:favoritable)
 
-    # 後で通知設定をDB化する用（今はダミー）
-    @notification_settings = {
-      email: true,
-      push: false
-    }
+    @favorite_shops = favorite_shop_records.map(&:favoritable)
+    @favorites_by_shop_id = favorite_shop_records.index_by(&:favoritable_id)
+
+    @notification_settings = { email: true, push: false }
   end
 end
