@@ -13,6 +13,8 @@ class Notification < ApplicationRecord
       "あなたのイベントが #{actor_name} にお気に入りされました"
     when [ "favorited", "Shop" ]
       "あなたの店舗が #{actor_name} にお気に入りされました"
+    when [ "favorited", "User" ]
+      "#{actor_name} にお気に入りされました"
     when [ "new_event", "Event" ]
       "お気に入りの店舗から新しいイベントが公開されました"
     when [ "pro_approved", "User" ]

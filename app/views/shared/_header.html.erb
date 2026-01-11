@@ -23,18 +23,18 @@
 
       <%= link_to "イベント一覧/検索",
             events_path,
-            class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+            class: "px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" %>
 
       <%= link_to "店舗一覧",
             shops_path,
-            class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+            class: "px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" %>
 
       <%= link_to "店舗登録",
             new_shop_path,
-            class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+            class: "px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" %>
 
       <%= link_to notifications_path,
-            class: "relative inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50 text-xs" do %>
+            class: "relative px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" do %>
 
         <span>通知</span>
 
@@ -47,10 +47,15 @@
         <% end %>
 
       <% end %>
+
+      <%= link_to "登録プロ一覧",
+            users_path,
+            class: "px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" %>
+
       <% if user_signed_in? %>
         <%= link_to "マイページ",
               mypage_path,
-              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50 text-xs" %>
+              class: "px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" %>
 
         <%= button_to "ログアウト",
               destroy_user_session_path,
@@ -66,6 +71,7 @@
               class: "px-3 py-1.5 rounded-full bg-black text-white hover:bg-slate-800" %>
       <% end %>
     </nav>
+
     <button
       type="button"
       class="inline-flex items-center justify-center h-9 w-9 rounded-md border border-slate-300 text-slate-700 md:hidden"
@@ -96,8 +102,10 @@
             class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
       <%= link_to "通知", notifications_path,
             class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
+      <%= link_to "登録プロ一覧", "#",
+            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
       <% if user_signed_in? %>
-        <%= link_to "マイページ", root_path,
+        <%= link_to "マイページ", mypage_path,
             class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
         <%= button_to "ログアウト",
               destroy_user_session_path,

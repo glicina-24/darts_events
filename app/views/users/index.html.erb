@@ -1,0 +1,31 @@
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="flex items-end justify-between mb-6">
+    <h1 class="text-2xl font-bold">承認済みプロ一覧</h1>
+    <p class="text-xs text-slate-500"><%= @pros.size %>名</p>
+  </div>
+
+  <% if @pros.any? %>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <% @pros.each do |pro| %>
+        <div class="rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+          <div class="p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-semibold"><%= pro.name %></p>
+                <p class="text-xs text-slate-500">承認済みプロ</p>
+              </div>
+              <div class="shrink-0">
+                <% favorite = user_signed_in? ? @favorites_by_user_id[pro.id] : nil %>
+                <%= render "favorites/button", favoritable: pro, favorite: favorite %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="rounded-2xl bg-white border border-slate-200 p-6 text-sm text-slate-500">
+      承認済みプロがまだいません。
+    </div>
+  <% end %>
+</div>
