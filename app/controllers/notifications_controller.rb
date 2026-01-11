@@ -30,8 +30,6 @@ class NotificationsController < ApplicationController
       event_path(notification.notifiable)
     when Shop
       shop_path(notification.notifiable)
-    when User
-      users_path
     else
       notifications_path
     end

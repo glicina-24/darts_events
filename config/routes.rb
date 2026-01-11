@@ -2,22 +2,17 @@ Rails.application.routes.draw do
   mount RailsAdmin::Engine => "/admin", as: "rails_admin"
   root "homes#index"
   devise_for :users
-
-  resource :mypage, only: %i[show], controller: :mypage
+  resource :mypage, only: %i[show], controller: "mypage"
 
   concern :favoritable do
     resource :favorite, only: %i[create destroy]
   end
 
-  resources :users, only: %i[index] do
-    concerns :favoritable
-  end
-
-  resources :events, concerns: [ :favoritable ] do
+  resources :events, only: %i[index show new create edit update destroy], concerns: [ :favoritable ] do
     delete "images/:image_id", to: "events#destroy_image", as: :image, on: :member
   end
 
-  resources :shops, concerns: [ :favoritable ] do
+  resources :shops, only: %i[index show new create edit update destroy], concerns: [ :favoritable ] do
     delete "images/:image_id", to: "shops#destroy_image", as: :image, on: :member
   end
 
@@ -36,5 +31,5 @@ Rails.application.routes.draw do
   get "/terms", to: "pages#terms"
   get "/privacy", to: "pages#privacy"
 
-  resource :pro_application, only: %i[new create], controller: :pro_applications
+  resource :pro_application, only: %i[new create], controller: "pro_applications"
 end
