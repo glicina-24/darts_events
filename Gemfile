@@ -83,3 +83,7 @@ gem 'whenever', require: false
 gem "rails_admin"
 gem "cancancan"
 gem "sassc-rails"
+
+group :development do
+  gem "letter_opener_web"
+end
