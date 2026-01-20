@@ -75,7 +75,7 @@
         <%= f.text_field :city,
               placeholder: "宮崎市✕✕",
               class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
-                     focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+                      focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
       </div>
     </div>
 
@@ -102,6 +102,34 @@
       <%= f.datetime_field :entry_deadline,
             class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm 
                   focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" %>
+    </div>
+
+    <div data-controller="pro-picker"
+        data-pro-picker-url-value="<%= pro_suggestions_users_path %>">
+
+      <label class="block text-sm font-medium mb-2">参加予定プロ</label>
+      <div class="flex flex-wrap gap-2 mb-2" data-pro-picker-target="selected">
+        <input type="hidden" name="event[pro_player_ids][]" value="">
+        <% (event.pro_players || []).each do |u| %>
+          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-white"
+                data-user-id="<%= u.id %>">
+            <span><%= u.name %></span>
+            <button type="button"
+                    class="text-slate-500 hover:text-red-600"
+                    data-action="click->pro-picker#remove"
+                    data-user-id="<%= u.id %>">×</button>
+            <input type="hidden" name="event[pro_player_ids][]" value="<%= u.id %>">
+          </span>
+        <% end %>
+      </div>
+
+      <input type="text"
+            class="w-full border rounded-md px-3 py-2"
+            placeholder="プロ名で検索"
+            data-pro-picker-target="input"
+            data-action="input->pro-picker#search keydown->pro-picker#preventEnter">
+
+      <div class="mt-2" data-pro-picker-target="results"></div>
     </div>
 
     <div>

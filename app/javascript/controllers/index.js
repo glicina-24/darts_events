@@ -1,9 +1,9 @@
-import { Application } from "@hotwired/stimulus"
+import { application } from "./application"
 
 import FlashController from "./flash_controller"
 import MenuController from "./menu_controller"
+import ProPickerController from "./pro_picker_controller"
 
-window.Stimulus = Application.start()
-
-Stimulus.register("flash", FlashController)
-Stimulus.register("menu", MenuController)
+application.register("flash", FlashController)
+application.register("menu", MenuController)
+application.register("pro-picker", ProPickerController)

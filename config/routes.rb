@@ -13,6 +13,10 @@ Rails.application.routes.draw do
 
   resources :users, only: %i[index] do
     concerns :favoritable
+
+    collection do
+      get :pro_suggestions
+    end
   end
 
   resources :events, concerns: [ :favoritable ] do

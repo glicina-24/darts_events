@@ -14,7 +14,18 @@ pro = User.find_or_create_by!(email: "pro@example.com") do |u|
   u.pro_sns_url = "https://x.com/example"
   u.pro_applied_at = Time.current - 2.days
   u.pro_player_status = :approved
-  u.pro_player = true
+end
+
+10.times do
+  email = Faker::Internet.unique.email
+  User.find_or_create_by!(email: email) do |u|
+    u.name = Faker::Name.name
+    u.password = "password"
+    u.password_confirmation = "password"
+    u.pro_sns_url = Faker::Internet.url(host: "example.com")
+    u.pro_applied_at = Time.current - rand(1..14).days
+    u.pro_player_status = :approved
+  end
 end
 
 general = User.find_or_create_by!(email: "general@example.com") do |u|

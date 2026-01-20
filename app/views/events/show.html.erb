@@ -128,6 +128,11 @@
             <%= @event.status_i18n&.to_s || "未設定" %>
           </p>
         </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">参加予定プレイヤー</p>
+          <p><%= @event.pro_players_display %></p>
+        </div>
       </div>
 
       <div class="mb-6 text-sm text-slate-700 space-y-2">
