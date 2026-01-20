@@ -1,15 +1,15 @@
 class EventsController < ApplicationController
-  before_action :authenticate_user!, except: [ :index, :show ]
-  before_action :set_event, only: [ :show, :edit, :update, :destroy ]
-  before_action :require_shop_owner, only: [ :new, :create ]
-  before_action :set_shop_for_event, only: [ :new, :create ]
-  before_action :authorize_event_owner!, only: [ :edit, :update, :destroy ]
-  before_action :set_owned_shops, only: [ :new, :create, :edit, :update ]
+  before_action :authenticate_user!, except: %i[index show]
+  before_action :set_event, only: %i[show edit update destroy]
+  before_action :require_shop_owner, only: %i[new create]
+  before_action :set_shop_for_event, only: %i[new create]
+  before_action :authorize_event_owner!, only: %i[edit update destroy]
+  before_action :set_owned_shops, only: %i[new create edit update]
 
   def index
     @q = Event.ransack(params[:q])
     @events = @q.result
-      .includes(:shop, participants: [], images_attachments: :blob)
+      .includes(:shop, pro_players: [], images_attachments: :blob)
       .order(start_datetime: :asc)
       .page(params[:page]).per(12)
 
@@ -33,34 +33,47 @@ class EventsController < ApplicationController
   end
 
   def create
-    @shop = current_user.shops.find_by(id: params[:event][:shop_id])
+    @shop = current_user.shops.find_by(id: event_params[:shop_id])
 
     unless @shop
-      redirect_to events_path, alert: "不正な店舗が指定されました。"
+      flash.now[:alert] = "不正な店舗が指定されました。"
+      @event = Event.new(event_params)
+      render :new, status: :unprocessable_entity
       return
     end
-    @event = @shop.events.build(event_params)
 
-    if @event.save
+    @event = @shop.events.build(event_params.except(:pro_player_ids, :images))
+
+    ActiveRecord::Base.transaction do
+      @event.save!
+
+      @event.pro_players = User.where(id: pro_player_ids)
+      @event.images.attach(event_params[:images]) if event_params[:images].present?
+
       create_new_event_notifications!(@event)
-      redirect_to @event, notice: "イベントを投稿しました。"
-    else
-      flash.now[:alert] = "イベントの投稿に失敗しました。入力内容を確認してください。"
-      render :new, status: :unprocessable_entity
     end
+
+    redirect_to @event, notice: "イベントを投稿しました。"
+  rescue ActiveRecord::RecordInvalid
+    flash.now[:alert] = "イベントの投稿に失敗しました。入力内容を確認してください。"
+    render :new, status: :unprocessable_entity
   end
 
   def edit
   end
 
   def update
-    if @event.update(event_params.except(:images))
+    ActiveRecord::Base.transaction do
+      @event.update!(event_params.except(:pro_player_ids, :images))
+      @event.pro_players = User.where(id: pro_player_ids)
+
       @event.images.attach(event_params[:images]) if event_params[:images].present?
-      redirect_to @event, notice: "イベントを更新しました。"
-    else
-      flash.now[:alert] = "更新に失敗しました。"
-      render :edit, status: :unprocessable_entity
     end
+
+    redirect_to @event, notice: "イベントを更新しました。"
+  rescue ActiveRecord::RecordInvalid
+    flash.now[:alert] = "更新に失敗しました。"
+    render :edit, status: :unprocessable_entity
   end
 
   def destroy
@@ -94,13 +107,12 @@ class EventsController < ApplicationController
       :fee,
       :capacity,
       :entry_deadline,
+      pro_player_ids: [],
       images: []
     )
   end
 
-  def set_event
-    @event = Event.includes(:shop).find(params[:id])
-  end
+  def set_event; @event = Event.includes(:shop, :pro_players, images_attachments: :blob).find(params[:id]); end
 
   def require_shop_owner
     unless current_user&.shop_owner?
@@ -132,7 +144,7 @@ class EventsController < ApplicationController
       :shop_prefecture_eq,
       :start_datetime_gteq,
       :start_datetime_lteq,
-      :participants_id_eq
+      :pro_players_id_eq
     )
   end
 
@@ -156,5 +168,9 @@ class EventsController < ApplicationController
     end
 
     Notification.insert_all!(rows) if rows.any?
+  end
+
+  def pro_player_ids
+    Array(event_params[:pro_player_ids]).reject(&:blank?)
   end
 end

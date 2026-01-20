@@ -1,0 +1,17 @@
+<% if users.any? %>
+  <ul class="border rounded-md bg-white shadow-sm">
+    <% users.each do |u| %>
+      <li>
+        <button type="button"
+          class="w-full text-left px-3 py-2 hover:bg-slate-50"
+          data-action="click->pro-picker#add"
+          data-user-id="<%= u.id %>"
+          data-user-name="<%= u.name %>">
+          <%= u.name %>
+        </button>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <div class="text-sm text-slate-500 px-3 py-2">候補なし</div>
+<% end %>

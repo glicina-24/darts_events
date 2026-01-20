@@ -20,7 +20,7 @@ class Event < ApplicationRecord
   validate :deadline_before_start
 
   has_many :event_participants, dependent: :destroy
-  has_many :participants, through: :event_participants, source: :user
+  has_many :pro_players, through: :event_participants, source: :user
   has_many :favorites, as: :favoritable, dependent: :destroy
 
   delegate :name, to: :shop, prefix: true
@@ -52,7 +52,7 @@ class Event < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[shop participants event_participants]
+    %w[shop pro_players event_participants]
   end
 
   def status_i18n
@@ -80,6 +80,12 @@ class Event < ApplicationRecord
       status: statuses[:finished],
       updated_at: Time.current
     )
+  end
+
+  def pro_players_display
+    pro_player_names = pro_players.map(&:name).reject(&:blank?)
+    return "ゲストなし" if pro_player_names.empty?
+    pro_player_names.map { |n| "#{n}プロ" }.join(", ")
   end
 
   private
