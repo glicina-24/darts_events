@@ -1,0 +1,42 @@
+<p>
+  <%= @recipient.name %> さん
+</p>
+
+<p>
+  <%= @event.shop.name %> さんがイベントを投稿しました 🎯
+</p>
+
+<hr>
+
+<p>
+  <strong><%= @event.title %></strong>
+</p>
+
+<p>
+  📅 開催日時：<br>
+  <%= l(@event.start_datetime, format: :long) %>
+</p>
+
+<% if @event.shop.present? %>
+  <p>
+    🏠 開催店舗：<br>
+    <%= @event.shop.name %>
+  </p>
+<% end %>
+
+<% if @event.pro_players.any? %>
+  <p>
+    ⭐ 参加予定プロ：<br>
+    <%= @event.pro_players_display %>
+  </p>
+<% end %>
+
+<p>
+  <%= link_to "イベント詳細を見る", event_url(@event) %>
+</p>
+
+<hr>
+
+<p style="font-size: 12px; color: #666;">
+  このメールは Darts Events に登録している通知設定に基づいて送信されています。
+</p>
