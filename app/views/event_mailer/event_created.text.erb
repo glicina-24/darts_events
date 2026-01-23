@@ -1,7 +1,28 @@
-イベントが作成されました。
+<%= @recipient.name %>さん
 
-タイトル：<%= @event.title %>
-開始：<%= l @event.start_datetime %>
+<% if @context[:reasons].include?("favorite_shop") && @context[:reasons].include?("favorite_pro") %>
+お気に入りの店舗「<%= @context[:shop_name] %>」で、
+<%= @context[:pro_names].map { |n| "#{n}プロ" }.join("、") %>
+が参加予定のイベントが公開されました。
 
-詳細：
+<% elsif @context[:reasons].include?("favorite_shop") %>
+お気に入りの店舗「<%= @context[:shop_name] %>」で、
+新しいイベントが公開されました。
+
+<% elsif @context[:reasons].include?("favorite_pro") %>
+お気に入りのプロ
+<%= @context[:pro_names].map { |n| "#{n}プロ" }.join("、") %>
+が参加予定のイベントが公開されました。
+<% end %>
+
+--------------------------------
+
+イベント名：<%= @event.title %>
+開催日時：<%= l(@event.start_datetime, format: :long) %>
+開催店舗：<%= @context[:shop_name] %>
+
+イベント詳細：
 <%= event_url(@event) %>
+
+--------------------------------
+Darts Events

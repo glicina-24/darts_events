@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_04_055341) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_22_231749) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,24 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_04_055341) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "email_deliveries", force: :cascade do |t|
+    t.bigint "recipient_id", null: false
+    t.bigint "actor_id"
+    t.string "action", null: false
+    t.string "notifiable_type", null: false
+    t.bigint "notifiable_id", null: false
+    t.string "dedupe_key", null: false
+    t.string "status", default: "sent", null: false
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_email_deliveries_on_actor_id"
+    t.index ["dedupe_key"], name: "index_email_deliveries_on_dedupe_key", unique: true
+    t.index ["notifiable_type", "notifiable_id"], name: "index_email_deliveries_on_notifiable_type_and_notifiable_id"
+    t.index ["recipient_id", "created_at"], name: "index_email_deliveries_on_recipient_id_and_created_at"
+    t.index ["recipient_id"], name: "index_email_deliveries_on_recipient_id"
   end
 
   create_table "event_participants", force: :cascade do |t|
@@ -140,6 +158,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_04_055341) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "email_deliveries", "users", column: "actor_id"
+  add_foreign_key "email_deliveries", "users", column: "recipient_id"
   add_foreign_key "event_participants", "events"
   add_foreign_key "event_participants", "users"
   add_foreign_key "events", "shops"

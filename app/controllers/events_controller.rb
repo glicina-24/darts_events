@@ -51,7 +51,7 @@ class EventsController < ApplicationController
       create_new_event_notifications!(@event)
     end
 
-    Notifications::EventNotificationService.new(@event, actor: current_user).event_created_smoke_test!
+    Notifications::EventNotificationService.new(@event, actor: current_user).notify_event_created!
 
     redirect_to @event, notice: "イベントを投稿しました。"
   rescue ActiveRecord::RecordInvalid
