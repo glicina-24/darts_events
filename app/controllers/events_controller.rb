@@ -46,12 +46,12 @@ class EventsController < ApplicationController
 
     ActiveRecord::Base.transaction do
       @event.save!
-
       @event.pro_players = User.where(id: pro_player_ids)
       @event.images.attach(event_params[:images]) if event_params[:images].present?
-
       create_new_event_notifications!(@event)
     end
+
+    Notifications::EventNotificationService.new(@event, actor: current_user).notify_event_created!
 
     redirect_to @event, notice: "イベントを投稿しました。"
   rescue ActiveRecord::RecordInvalid

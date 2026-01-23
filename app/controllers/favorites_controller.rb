@@ -35,7 +35,7 @@ class FavoritesController < ApplicationController
   end
 
   def destroy
-    current_user.favorites.where(favoritable: @favoritable).destroy_all
+    current_user.favorites.find_by(favoritable: @favoritable)&.destroy
 
     respond_to do |format|
       format.turbo_stream do
