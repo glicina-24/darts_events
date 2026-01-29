@@ -87,3 +87,7 @@ gem "sassc-rails"
 group :development do
   gem "letter_opener_web"
 end
+
+group :development, :test do
+  gem "rspec-rails"
+end
