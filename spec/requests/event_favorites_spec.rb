@@ -10,21 +10,24 @@ RSpec.describe "Event favorites", type: :request do
       expect(response).to redirect_to(new_user_session_path)
     end
 
-    it "ログイン済みはお気に入りできる" do
+    it "ログイン済みはお気に入りできる（DB増える）" do
       event = create(:event)
       sign_in user
-      post event_favorite_path(event)
+      expect {
+        post event_favorite_path(event)
+      }.to change(Favorite, :count).by(1)
       expect(response).to have_http_status(:found)
     end
   end
 
   describe "DELETE /events/:event_id/favorite" do
-    it "ログイン済みは解除できる" do
+    it "ログイン済みは解除できる（DB減る）" do
       event = create(:event)
       sign_in user
       post event_favorite_path(event)
-
-      delete event_favorite_path(event)
+      expect {
+        delete event_favorite_path(event)
+      }.to change(Favorite, :count).by(-1)
       expect(response).to have_http_status(:found)
     end
   end
