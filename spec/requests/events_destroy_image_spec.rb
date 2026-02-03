@@ -5,7 +5,7 @@ RSpec.describe "Event image destroy", type: :request do
   let(:other) { create(:user) }
   let(:shop) { create(:shop, user: owner) }
   let!(:event) { create(:event, shop: shop) }
-  let!(:attachment) do #画像
+  let!(:attachment) do # 画像
     event.images.attach(
       io: File.open(Rails.root.join("spec/fixtures/files/sample.jpeg")),
       filename: "sample.jpeg",
