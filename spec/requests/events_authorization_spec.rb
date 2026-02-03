@@ -33,7 +33,7 @@ RSpec.describe "Events authorization", type: :request do
   describe "PATCH /events/:id" do
     it "他人（店舗オーナー以外）は更新できずDB変更なし" do
       sign_in other
-      before_title = event.title # titleが無いなら別カラムに変更
+      before_title = event.title
 
       patch event_path(event), params: { event: { title: "updated" } }
 
