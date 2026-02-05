@@ -22,6 +22,7 @@ RSpec.describe Event, type: :model do
 
       expect(event).not_to be_valid
       expect(event.errors[:images]).to be_present
+      expect(event.errors[:images].join).to match(/5/)
     end
 
     it "画像が5枚までなら有効" do
