@@ -11,7 +11,7 @@ module Notifications
     def notify_event_created!
       recipients = recipients_with_reason_for_event_created
 
-      # User を一括取得（N+1回避）
+      # recipients（送信対象）を先に集計し、Userは一括取得してN+1を避ける
       users_by_id = User.where(id: recipients.keys).index_by(&:id)
 
       recipients.each do |user_id, notification_context|
@@ -53,10 +53,18 @@ module Notifications
       :sent
     rescue ActiveRecord::RecordNotUnique
       :already_sent
-    rescue => e # 送信失敗でもイベント作成は成功させたい
-      delivery&.failed! if defined?(delivery) && delivery.respond_to?(:failed!)
-      delivery&.update(error_message: "#{e.class}: #{e.message}") if defined?(delivery) && delivery
-      Rails.logger.error("[mail] event_created failed: #{e.class} #{e.message}")
+
+    # メール送信失敗でもイベント作成を止めない：成功扱いで継続する
+    # 失敗は必ず追跡できるようにログ/Sentryへ記録する
+    rescue => e
+      delivery&.failed! if delivery&.respond_to?(:failed!)
+      delivery&.update(error_message: "#{e.class}: #{e.message}")
+      Rails.logger.error(
+        "[mail] event_created failed " \
+        "event_id=#{@event.id} recipient_id=#{recipient.id} dedupe_key=#{dedupe_key} " \
+        "#{e.class} #{e.message}"
+      )
+      Sentry.capture_exception(e) if defined?(Sentry)
       :failed
     end
 
