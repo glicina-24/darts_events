@@ -45,9 +45,10 @@ class EventsController < ApplicationController
     @event = @shop.events.build(event_params.except(:pro_player_ids, :images))
 
     ActiveRecord::Base.transaction do
+      @event.images.attach(event_params[:images]) if event_params[:images].present?
+
       @event.save!
       @event.pro_players = User.where(id: pro_player_ids)
-      @event.images.attach(event_params[:images]) if event_params[:images].present?
       create_new_event_notifications!(@event)
     end
 
@@ -64,10 +65,9 @@ class EventsController < ApplicationController
 
   def update
     ActiveRecord::Base.transaction do
+      @event.images.attach(event_params[:images]) if event_params[:images].present?
       @event.update!(event_params.except(:pro_player_ids, :images))
       @event.pro_players = User.where(id: pro_player_ids)
-
-      @event.images.attach(event_params[:images]) if event_params[:images].present?
     end
 
     redirect_to @event, notice: "イベントを更新しました。"
