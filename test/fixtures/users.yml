@@ -2,12 +2,12 @@
 
 one:
   name: User One
-  email: user1@example.com
+  email: user_fixture_one@example.com
   shop_owner: false
   pro_player: false
 
 two:
   name: User Two
-  email: user2@example.com
+  email: user_fixture_two@example.com
   shop_owner: false
   pro_player: false
