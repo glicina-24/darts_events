@@ -1,122 +1,190 @@
-<header class="sticky top-0 z-40 w-full bg-white border-b" data-controller="menu">
+<header class="sticky top-0 z-40 w-full bg-white/95 border-b" data-controller="menu">
   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-    <%= link_to root_path, class: "flex items-center gap-2" do %>
-      <span class="text-m font-semibold tracking-wide">Darts Events</span>
+    
+    <!-- ロゴ -->
+    <%= link_to root_path, class: "group flex items-center gap-2 transition-transform hover:scale-105" do %>
+      <span class="text-xl font-black bg-gradient-to-r from-slate-900 via-sky-600 to-emerald-600 bg-clip-text text-transparent">
+        Darts Events
+      </span>
     <% end %>
 
+    <!-- 検索フォーム -->
     <div class="flex-1 max-w-xs sm:max-w-sm md:max-w-xl">
       <form action="<%= events_path %>" method="get" class="w-full">
-        <div class="flex items-center bg-slate-100 rounded-full px-3 py-1.5 gap-2">
+        <div class="group flex items-center bg-slate-100 rounded-full px-4 py-2 gap-2 transition-all duration-200 hover:bg-slate-200 focus-within:ring-2 focus-within:ring-sky-400/50 focus-within:bg-white">
+          <svg class="w-4 h-4 text-slate-400 group-focus-within:text-sky-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
           <input
             type="text"
             name="q[title_or_description_or_shop_name_or_shop_prefecture_cont]"
             value="<%= params.dig(:q, :title_or_description_or_shop_name_or_shop_prefecture_cont) %>"
-            placeholder="イベント名・詳細・店舗名・都道府県で検索"
+            placeholder="イベント・店舗・都道府県で検索"
             class="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
           >
-          <button type="submit" class="text-slate-500">🔍</button>
         </div>
       </form>
     </div>
 
-    <nav class="hidden md:flex items-center gap-2 text-xs ml-auto">
+    <!-- デスクトップナビゲーション -->
+    <nav class="hidden md:flex items-center gap-1 ml-auto">
 
-      <%= link_to "イベント一覧/検索",
-            events_path,
-            class: "px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" %>
+      <%= link_to events_path,
+            class: "group px-3 py-2 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-100 transition-all" do %>
+        <span class="group-hover:text-sky-600 transition-colors">🔍 イベント検索</span>
+      <% end %>
 
-      <%= link_to "店舗一覧",
-            shops_path,
-            class: "px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" %>
+      <%= link_to shops_path,
+            class: "group px-3 py-2 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-100 transition-all" do %>
+        <span class="group-hover:text-emerald-600 transition-colors">🏢 店舗一覧</span>
+      <% end %>
 
-      <%= link_to "店舗登録",
-            new_shop_path,
-            class: "px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" %>
+      <%= link_to new_shop_path,
+            class: "group px-3 py-2 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-100 transition-all" do %>
+        <span class="group-hover:text-sky-600 transition-colors">➕ 店舗登録</span>
+      <% end %>
 
+      <!-- 通知(バッジ付き) -->
       <%= link_to notifications_path,
-            class: "relative px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" do %>
-
-        <span>通知</span>
-
+            class: "group relative px-3 py-2 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-100 transition-all" do %>
+        <span class="group-hover:text-sky-600 transition-colors">🔔 通知</span>
+        
         <% if @unread_notifications_count.to_i > 0 %>
-          <span class="absolute -top-2 -right-2 min-w-[18px] h-[18px]
-                      rounded-full bg-red-500 text-white text-[10px]
-                      flex items-center justify-center font-bold">
+          <span class="absolute top-0.5 right-0.5 min-w-[20px] h-[20px] px-1
+                      rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white text-[10px]
+                      flex items-center justify-center font-bold shadow-lg animate-pulse">
             <%= @unread_notifications_count > 99 ? "99+" : @unread_notifications_count %>
           </span>
         <% end %>
-
       <% end %>
 
-      <%= link_to "登録プロ一覧",
-            users_path,
-            class: "px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" %>
+      <%= link_to users_path,
+            class: "group px-3 py-2 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-100 transition-all" do %>
+        <span class="group-hover:text-emerald-600 transition-colors">👤 登録プロ</span>
+      <% end %>
 
       <% if user_signed_in? %>
-        <%= link_to "マイページ",
-              mypage_path,
-              class: "px-2 py-1 text-slate-700 text-xs font-semibold hover:text-slate-900 hover:underline" %>
+        <%= link_to mypage_path,
+              class: "group px-3 py-2 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-100 transition-all" do %>
+          <span class="group-hover:text-sky-600 transition-colors">⚙️ マイページ</span>
+        <% end %>
 
-        <%= button_to "ログアウト",
-              destroy_user_session_path,
+        <%= button_to destroy_user_session_path,
               method: :delete,
               form: { data: { turbo_confirm: "ログアウトしますか？" } },
-              class: "px-3 py-1.5 rounded-full bg-black text-white hover:bg-slate-800 text-xs" %>
+              class: "px-4 py-2 rounded-lg bg-slate-100 text-slate-700 text-sm font-semibold hover:bg-slate-200 transition-all" do %>
+          <span>ログアウト</span>
+        <% end %>
       <% else %>
-        <%= link_to "新規登録",
-              new_user_registration_path,
-              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
-        <%= link_to "ログイン",
-              new_user_session_path,
-              class: "px-3 py-1.5 rounded-full bg-black text-white hover:bg-slate-800" %>
+        <%= link_to new_user_registration_path,
+              class: "inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-sky-400 hover:bg-sky-50 transition-all" do %>
+          <span>新規登録</span>
+        <% end %>
+        
+        <%= link_to new_user_session_path,
+              class: "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-sky-500 to-sky-600 text-white text-sm font-bold shadow-md shadow-sky-500/30 hover:shadow-lg hover:shadow-sky-500/40 hover:scale-105 transition-all" do %>
+          <span>ログイン</span>
+        <% end %>
       <% end %>
     </nav>
 
+    <!-- モバイルメニューボタン -->
     <button
       type="button"
-      class="inline-flex items-center justify-center h-9 w-9 rounded-md border border-slate-300 text-slate-700 md:hidden"
+      class="inline-flex items-center justify-center h-10 w-10 rounded-lg border-2 border-slate-300 text-slate-700 hover:bg-slate-100 hover:border-sky-400 transition-all md:hidden"
       data-action="click->menu#toggle"
     >
-      <span data-menu-target="iconOpen" class="text-lg leading-none">☰</span>
-      <span data-menu-target="iconClose" class="text-lg leading-none hidden">✕</span>
+      <span data-menu-target="iconOpen" class="flex items-center justify-center text-2xl leading-none">☰</span>
+      <span data-menu-target="iconClose" class="flex items-center justify-center text-2xl leading-none hidden">✕</span>
     </button>
   </div>
 
+  <!-- モバイルメニュー: 背景オーバーレイ -->
   <div
     data-menu-target="backdrop"
     data-action="click->menu#close"
-    class="hidden fixed inset-0 bg-black/30 md:hidden z-30"
+    class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-30 md:hidden transition-opacity"
   ></div>
 
+  <!-- モバイルメニュー: サイドパネル -->
   <div
     data-menu-target="panel"
     class="fixed inset-y-0 right-0 z-40 w-64 max-w-[75%] bg-white shadow-lg
           transform translate-x-full transition-transform duration-400 md:hidden"
   >
     <nav class="h-full px-4 py-4 flex flex-col gap-2 text-sm">
-      <%= link_to "イベント一覧/検索", events_path,
-            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
-      <%= link_to "店舗一覧", shops_path,
-            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
-      <%= link_to "店舗登録", new_shop_path,
-            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
-      <%= link_to "通知", notifications_path,
-            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
-      <%= link_to "登録プロ一覧", "#",
-            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
+      
+      <%= link_to events_path,
+            data: { action: "click->menu#close" },
+            class: "group flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 font-semibold hover:bg-gradient-to-r hover:from-sky-50 hover:to-sky-100 transition-all" do %>
+        <span class="text-xl">🔍</span>
+        <span class="group-hover:text-sky-600">イベント一覧/検索</span>
+      <% end %>
+
+      <%= link_to shops_path,
+            data: { action: "click->menu#close" },
+            class: "group flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 font-semibold hover:bg-gradient-to-r hover:from-emerald-50 hover:to-emerald-100 transition-all" do %>
+        <span class="text-xl">🏢</span>
+        <span class="group-hover:text-emerald-600">店舗一覧</span>
+      <% end %>
+
+      <%= link_to new_shop_path,
+            data: { action: "click->menu#close" },
+            class: "group flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 font-semibold hover:bg-gradient-to-r hover:from-sky-50 hover:to-sky-100 transition-all" do %>
+        <span class="text-xl">➕</span>
+        <span class="group-hover:text-sky-600">店舗登録</span>
+      <% end %>
+
+      <%= link_to notifications_path,
+            data: { action: "click->menu#close" },
+            class: "group relative flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 font-semibold hover:bg-gradient-to-r hover:from-sky-50 hover:to-sky-100 transition-all" do %>
+        <span class="text-xl">🔔</span>
+        <span class="group-hover:text-sky-600">通知</span>
+        
+        <% if @unread_notifications_count.to_i > 0 %>
+          <span class="ml-auto min-w-[24px] h-[24px] px-1.5
+                      rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs
+                      flex items-center justify-center font-bold shadow-md">
+            <%= @unread_notifications_count > 99 ? "99+" : @unread_notifications_count %>
+          </span>
+        <% end %>
+      <% end %>
+
+      <%= link_to users_path,
+            data: { action: "click->menu#close" },
+            class: "group flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 font-semibold hover:bg-gradient-to-r hover:from-emerald-50 hover:to-emerald-100 transition-all" do %>
+        <span class="text-xl">👤</span>
+        <span class="group-hover:text-emerald-600">登録プロ一覧</span>
+      <% end %>
+
       <% if user_signed_in? %>
-        <%= link_to "マイページ", mypage_path,
-            class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
-        <%= button_to "ログアウト",
-              destroy_user_session_path,
+        <%= link_to mypage_path,
+              data: { action: "click->menu#close" },
+              class: "group flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 font-semibold hover:bg-gradient-to-r hover:from-sky-50 hover:to-sky-100 transition-all" do %>
+          <span class="text-xl">⚙️</span>
+          <span class="group-hover:text-sky-600">マイページ</span>
+        <% end %>
+
+        <%= button_to destroy_user_session_path,
               method: :delete,
-              form: { data: { turbo_confirm: "ログアウトしますか？" } },
-              class: "py-2 border-b border-slate-100 text-slate-700 hover:bg-slate-50" %>
+              form: { data: { turbo_confirm: "ログアウトしますか?" } },
+              class: "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 transition-all" do %>
+          <span class="text-xl">🚪</span>
+          <span>ログアウト</span>
+        <% end %>
+
       <% else %>
-        <%= link_to "新規登録", new_user_registration_path,
-              class: "block py-2 text-slate-700 hover:bg-slate-50" %>
-        <%= link_to "ログイン", new_user_session_path,
-              class: "block py-2 text-white bg-black rounded-md text-center mt-1 hover:bg-slate-800" %>
+        <%= link_to new_user_registration_path,
+              data: { action: "click->menu#close" },
+              class: "flex items-center justify-center gap-2 px-5 py-3 rounded-lg border-2 border-slate-300 text-slate-700 font-bold hover:border-sky-400 hover:bg-sky-50 transition-all" do %>
+          <span>新規登録</span>
+        <% end %>
+
+        <%= link_to new_user_session_path,
+              data: { action: "click->menu#close" },
+              class: "mt-2 flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-gradient-to-r from-sky-500 to-sky-600 text-white font-bold shadow-lg shadow-sky-500/30 hover:shadow-xl transition-all" do %>
+          <span>ログイン</span>
+        <% end %>
       <% end %>
     </nav>
   </div>
