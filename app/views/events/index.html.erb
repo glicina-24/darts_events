@@ -67,12 +67,12 @@
             <%= image_tag main_image.variant(resize_to_fill: [800, 400]),
                   class: "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" %>
           <% else %>
-            <div class="h-full w-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-400 text-sm">
+            <div class="h-full w-full bg-linear-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-400 text-sm">
               No Image
             </div>
           <% end %>
 
-          <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-black/0 to-black/0 pointer-events-none"></div>
+          <div class="absolute inset-0 bg-linear-to-t from-black/20 via-black/0 to-black/0 pointer-events-none"></div>
 
           <div class="absolute top-3 right-3 z-10">
             <% favorite = user_signed_in? ? @favorites_by_event_id[event.id] : nil %>
@@ -86,7 +86,7 @@
               トーナメント
             </span>
 
-            <span class="inline-flex items-center max-w-[160px] rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-600 border border-slate-100 truncate">
+            <span class="inline-flex items-center max-w-40 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-600 border border-slate-100 truncate">
               🏠 <%= event.shop&.name || "店舗未登録" %>
             </span>
           </div>
