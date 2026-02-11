@@ -47,7 +47,7 @@
           <!-- メイン画像 -->
           <div class="w-full mb-3">
             <% main_image = @event.images.first %>
-            <div class="aspect-[16/9] w-full overflow-hidden rounded-xl bg-slate-100">
+            <div class="aspect-video w-full overflow-hidden rounded-xl bg-slate-100">
               <%= image_tag main_image.variant(resize_to_fill: [1200, 675]),
                     class: "w-full h-full object-cover" %>
             </div>
