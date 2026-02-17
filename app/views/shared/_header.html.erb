@@ -3,7 +3,7 @@
     
     <!-- ロゴ -->
     <%= link_to root_path, class: "group flex items-center gap-2 transition-transform hover:scale-105" do %>
-      <span class="text-xl font-black bg-gradient-to-r from-slate-900 via-sky-600 to-emerald-600 bg-clip-text text-transparent">
+      <span class="text-xl font-black bg-linear-to-r from-slate-900 via-sky-600 to-emerald-600 bg-clip-text text-transparent">
         Darts Events
       </span>
     <% end %>
@@ -50,8 +50,8 @@
         <span class="group-hover:text-sky-600 transition-colors">🔔 通知</span>
         
         <% if @unread_notifications_count.to_i > 0 %>
-          <span class="absolute top-0.5 right-0.5 min-w-[20px] h-[20px] px-1
-                      rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white text-[10px]
+          <span class="absolute top-0.5 right-0.5 min-w-5 h-5 px-1
+                      rounded-full bg-linear-to-r from-red-500 to-pink-500 text-white text-[10px]
                       flex items-center justify-center font-bold shadow-lg animate-pulse">
             <%= @unread_notifications_count > 99 ? "99+" : @unread_notifications_count %>
           </span>
@@ -95,7 +95,7 @@
       data-action="click->menu#toggle"
     >
       <span data-menu-target="iconOpen" class="flex items-center justify-center text-2xl leading-none">☰</span>
-      <span data-menu-target="iconClose" class="flex items-center justify-center text-2xl leading-none hidden">✕</span>
+      <span data-menu-target="iconClose" class="items-center justify-center text-2xl leading-none hidden">✕</span>
     </button>
   </div>
 
@@ -142,8 +142,8 @@
         <span class="group-hover:text-sky-600">通知</span>
         
         <% if @unread_notifications_count.to_i > 0 %>
-          <span class="ml-auto min-w-[24px] h-[24px] px-1.5
-                      rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs
+          <span class="ml-auto min-w-6 h-6 px-1.5
+                      rounded-full bg-linear-to-r from-red-500 to-pink-500 text-white text-xs
                       flex items-center justify-center font-bold shadow-md">
             <%= @unread_notifications_count > 99 ? "99+" : @unread_notifications_count %>
           </span>
