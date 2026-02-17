@@ -8,13 +8,15 @@
       <% end %>
 
       <% if user_signed_in? %>
-        <%= link_to "マイページ", root_path,
-              class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50" %>
+        <%= link_to root_path_path,
+              class: "inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-sky-400 hover:bg-sky-50 transition-all" do %>
+          <span>マイページ</span>
+        <% end %>
       <% else %>
-        <div class="flex items-center gap-2 text-xs">
-          <%= link_to "新規登録",
-                new_user_registration_path,
-        </div>
+        <%= link_to new_user_session_path,
+              class: "inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-sky-400 hover:bg-sky-50 transition-all" do %>
+          <span>ログイン</span>
+        <% end %>
       <% end %>
     </div>
   </header>
