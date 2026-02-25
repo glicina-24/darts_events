@@ -56,11 +56,31 @@
     <p class="text-xs text-slate-500"><%= @events.total_count %>件</p>
   </div>
 
-  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-    <% @events.each do |event| %>
-      <%= render "events/card", event: event %>
-    <% end %>
-  </div>
+  <% if @events.any? %>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <% @events.each do |event| %>
+        <%= render "events/card", event: event %>
+      <% end %>
+    </div>
+  <% elsif params[:q].present? %>
+    <div class="text-center py-8">
+      <p class="text-lg font-semibold text-slate-800">
+        検索結果がありません
+      </p>
+      <p class="mt-2 text-sm text-slate-500">
+        条件を変更して再度お試しください。
+      </p>
+      <%= link_to "条件をリセット",
+      events_path,
+      class: "mt-4 inline-block px-4 py-2 rounded-full bg-slate-900 text-white text-sm" %>
+    </div>
+  <% else %>
+    <div class="text-center py-12">
+      <p class="text-lg font-semibold text-slate-800">
+        イベントがありません
+      </p>
+    </div>
+  <% end %>
 
   <div class="mt-8 flex justify-center">
     <%= paginate @events, params: @pagination_params %>
