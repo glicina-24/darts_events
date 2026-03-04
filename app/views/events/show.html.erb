@@ -11,18 +11,15 @@
     </div>
 
     <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
-      <!-- タイトル + 編集/削除 -->
+      <!-- タイトル + 編集/削除 or お気に入り -->
       <div class="flex items-start justify-between gap-3 mb-2">
         <h1 class="text-2xl sm:text-3xl font-bold">
           <%= @event.title %>
         </h1>
 
-        <div class="shrink-0">
-          <% favorite = user_signed_in? ? current_user.favorites.find_by(favoritable: @event) : nil %>
-          <%= render "favorites/button", favoritable: @event, favorite: favorite %>
-        </div>
+        <% is_owner = user_signed_in? && @event.shop&.user == current_user %>
 
-        <% if user_signed_in? && @event.shop.user == current_user %>
+        <% if is_owner %>
           <div class="flex flex-col sm:flex-row gap-2 text-xs">
             <%= link_to "編集する",
                   edit_event_path(@event),
@@ -33,6 +30,11 @@
                   method: :delete,
                   form: { data: { turbo_confirm: "本当に削除しますか？" } },
                   class: "inline-flex items-center justify-center rounded-full bg-red-500 px-3 py-1.5 font-semibold text-white hover:bg-red-600" %>
+          </div>
+        <% elsif user_signed_in? %>
+          <div class="shrink-0">
+            <% favorite = current_user.favorites.find_by(favoritable: @event) %>
+            <%= render "favorites/button", favoritable: @event, favorite: favorite %>
           </div>
         <% end %>
       </div>
