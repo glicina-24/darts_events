@@ -66,6 +66,19 @@ class Event < ApplicationRecord
 
   enum :status, { scheduled: 0, finished: 1, canceled: 2 }, default: :scheduled
 
+  def status_badge_class
+    case status
+    when "scheduled"
+      "bg-sky-100 text-sky-700"
+    when "finished"
+      "bg-slate-200 text-slate-700"
+    when "canceled"
+      "bg-red-100 text-red-700"
+    else
+      "bg-slate-100 text-slate-700"
+    end
+  end
+
   scope :should_be_finished, -> {
     where(status: :scheduled)
       .where(
