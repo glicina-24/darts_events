@@ -15,12 +15,10 @@
 
       <div class="mb-3">
         <div class="flex items-start justify-between gap-3">
-          <!-- 左：タイトル -->
+          <!-- 1行目：タイトル（左） + 操作（右・PCのみ） -->
           <h1 class="min-w-0 text-2xl sm:text-3xl font-bold wrap-break-word">
             <%= @event.title %>
           </h1>
-
-          <!-- 右：操作（PCで同じ行に固定） -->
           <div class="hidden sm:flex shrink-0 items-center gap-2 text-xs">
             <% if is_owner %>
               <%= link_to "編集する",
@@ -39,34 +37,34 @@
           </div>
         </div>
 
-        <!-- スマホ用：操作は次の行に出す（崩れ防止） -->
-        <div class="mt-2 sm:hidden flex justify-end">
-          <% if is_owner %>
-            <div class="flex flex-wrap items-center gap-2 text-xs">
-              <%= link_to "編集する",
-                    edit_event_path(@event),
-                    class: "inline-flex items-center justify-center rounded-full border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+        <!-- 2行目：主催 + ステータス +（スマホのみ右寄せ) -->
+        <div class="mt-2 flex items-center justify-between gap-3">
+          <p class="min-w-0 text-sm text-slate-500">
+            主催：<strong><%= @event.shop.name %></strong>
+            <span class="ml-2 inline-flex w-fit shrink-0 items-center rounded-full px-2.5 py-1 text-xs font-semibold <%= @event.status_badge_class %>">
+              <%= @event.status_i18n&.to_s || "未設定" %>
+            </span>
+          </p>
 
-              <%= button_to "削除する",
-                    event_path(@event),
-                    method: :delete,
-                    form: { data: { turbo_confirm: "本当に削除しますか？" } },
-                    class: "inline-flex items-center justify-center rounded-full bg-red-500 px-3 py-1.5 font-semibold text-white hover:bg-red-600" %>
-            </div>
-          <% elsif user_signed_in? %>
-            <% favorite = current_user.favorites.find_by(favoritable: @event) %>
-            <%= render "favorites/button", favoritable: @event, favorite: favorite %>
-          <% end %>
+          <div class="sm:hidden shrink-0">
+            <% if is_owner %>
+              <div class="flex flex-wrap items-center gap-2 text-xs">
+                <%= link_to "編集する",
+                      edit_event_path(@event),
+                      class: "inline-flex items-center justify-center rounded-full border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:bg-slate-50" %>
+
+                <%= button_to "削除する",
+                      event_path(@event),
+                      method: :delete,
+                      form: { data: { turbo_confirm: "本当に削除しますか？" } },
+                      class: "inline-flex items-center justify-center rounded-full bg-red-500 px-3 py-1.5 font-semibold text-white hover:bg-red-600" %>
+              </div>
+            <% elsif user_signed_in? %>
+              <% favorite = current_user.favorites.find_by(favoritable: @event) %>
+              <%= render "favorites/button", favoritable: @event, favorite: favorite %>
+            <% end %>
+          </div>
         </div>
-      </div>
-
-      <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
-        <p class="text-sm text-slate-500">
-          主催：<strong><%= @event.shop.name %></strong>
-        </p>
-        <span class="w-fit shrink-0 inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold <%= @event.status_badge_class %>">
-          <%= @event.status_i18n&.to_s || "未設定" %>
-        </span>
       </div>
 
       <!-- 画像セクション -->
@@ -94,6 +92,7 @@
       <% end %>
 
       <% full_address = [@event.prefecture, @event.city, @event.address].compact.join %>
+      
       <div class="mb-6 text-sm text-slate-700 space-y-2">
         <% if @event.location.present? %>
           <p>
@@ -102,7 +101,7 @@
           </p>
         <% end %>
 
-        <% if @event.prefecture.present? || @event.city.present? || @event.address.present? %>
+        <% if full_address.present? %>
           <p>
             <span class="text-xs text-slate-400 mr-2">住所</span>
             <%= full_address %>
