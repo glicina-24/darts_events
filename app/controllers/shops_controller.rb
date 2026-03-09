@@ -24,11 +24,13 @@ class ShopsController < ApplicationController
 
   def create
     @shop = current_user.shops.build(shop_params)
+    @shop.shop_status = :pending
+    @shop.shop_applied_at = Time.current
 
     if @shop.save
-      redirect_to @shop, notice: "店舗を登録しました。"
+      redirect_to root_path, notice: "店舗登録を申請しました。承認後に公開されます。"
     else
-      flash.now[:alert] = "店舗登録に失敗しました。入力内容を確認してください。"
+      flash.now[:alert] = "店舗登録申請に失敗しました。"
       render :new, status: :unprocessable_entity
     end
   end
@@ -81,6 +83,8 @@ class ShopsController < ApplicationController
       :phone_number,
       :latitude,
       :longitude,
+      :google_maps_url,
+      :contact_email,
       images: []
     )
   end

@@ -19,6 +19,10 @@ class Shop < ApplicationRecord
   validates :postal_code, format: { with: /\A\d{3}-?\d{4}\z/ }, allow_blank: true
   validates :phone_number, format: { with: /\A\d{2,4}-?\d{2,4}-?\d{3,4}\z/ }, allow_blank: true
 
+  enum :shop_status, { pending: 0, approved: 1, rejected: 2 }, default: :pending
+  validates :google_maps_url, format: { with: /\Ahttps?:\/\/(www\.)?google\.[^\/]+\/maps/ }, presence: true, if: :pending?
+  validates :contact_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true, if: :pending?
+
   scope :recent, -> { order(created_at: :desc) }
 
   def owned_by?(user)
