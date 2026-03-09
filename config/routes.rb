@@ -25,6 +25,7 @@ Rails.application.routes.draw do
 
   resources :shops, concerns: [ :favoritable ] do
     delete "images/:image_id", to: "shops#destroy_image", as: :image, on: :member
+    get :verify_email, on: :member
   end
 
   resources :notifications, only: %i[index] do
