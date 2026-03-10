@@ -34,4 +34,29 @@ RailsAdmin.config do |config|
       field :pro_player
     end
   end
+
+  config.model "Shop" do
+    list do
+      field :id
+      field :name
+      field :user
+      field :shop_status
+      field :address
+      field :google_maps_url
+      field :contact_email
+      field :shop_applied_at
+      field :email_verified_at
+      field :created_at
+    end
+
+    edit do
+      field :name
+      field :shop_status
+      field :address
+      field :google_maps_url
+      field :contact_email
+      field :shop_applied_at
+      field :email_verified_at
+    end
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_11_075258) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_09_005815) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -130,9 +130,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_11_075258) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "shop_status", default: 0, null: false
+    t.datetime "shop_applied_at"
+    t.string "google_maps_url"
+    t.string "contact_email"
+    t.string "email_verification_token_digest"
+    t.datetime "email_verification_sent_at"
+    t.datetime "email_verified_at"
     t.index ["city"], name: "index_shops_on_city"
+    t.index ["contact_email"], name: "index_shops_on_contact_email"
+    t.index ["email_verification_token_digest"], name: "index_shops_on_email_verification_token_digest", unique: true
     t.index ["name"], name: "index_shops_on_name"
     t.index ["prefecture"], name: "index_shops_on_prefecture"
+    t.index ["shop_status"], name: "index_shops_on_shop_status"
     t.index ["user_id"], name: "index_shops_on_user_id"
   end
 
