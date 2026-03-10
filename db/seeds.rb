@@ -39,6 +39,11 @@ shop = Shop.find_or_create_by!(name: "Darts Bar ONE", user: owner) do |s|
   s.prefecture = "宮崎県"
   s.city = "宮崎市"
   s.address = "宮崎県宮崎市〇〇1-2-3"
+  s.google_maps_url = "https://www.google.com/maps"
+  s.contact_email = "shop-one@example.com"
+  s.shop_status = :approved
+  s.shop_applied_at = Time.current - 3.days
+  s.email_verified_at = Time.current - 3.days
 end
 
 event = Event.find_or_create_by!(
