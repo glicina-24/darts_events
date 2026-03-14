@@ -76,6 +76,9 @@
         <% end %>
 
         <div class="mt-6 text-center text-sm text-slate-600 space-y-1">
+          <div>
+            <%= button_to "Googleでログイン", user_google_oauth2_omniauth_authorize_path, method: :post, data: { turbo: false } %>
+          </div>
           <p>
             アカウントをお持ちでない方は
             <%= link_to "新規登録", new_user_registration_path,
