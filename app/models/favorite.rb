@@ -21,7 +21,7 @@ class Favorite < ApplicationRecord
       end
 
     return if recipient.blank?
-    return if recipient == user # 自分の店/イベントをお気に入りしても通知いらん
+    return if recipient == user # 自分の店/イベントはお気に入りしても通知しない
 
     Notification.create!(
       recipient: recipient,
