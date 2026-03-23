@@ -17,7 +17,7 @@ gem "sassc-rails"
 
 # Auth
 gem "bcrypt", "~> 3.1.7"
-gem "devise"
+gem "devise", ">= 5.0.3"
 gem "devise-i18n"
 gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
