@@ -82,6 +82,12 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v1
         with:
@@ -91,6 +97,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y libvips postgresql-client
+
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Run tests
         run: |
