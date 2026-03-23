@@ -95,6 +95,8 @@ jobs:
       - name: Run tests
         run: |
           bin/rails db:prepare
+          yarn build
+          yarn build:css
           bundle exec rspec
 
       - name: Keep screenshots from failed system tests
