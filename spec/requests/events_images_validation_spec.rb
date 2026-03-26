@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Events images validation", type: :request do
   let(:owner) { create(:user) }
-  let(:shop)  { create(:shop, user: owner) }
+  let(:shop)  { create(:shop, user: owner, shop_status: :approved) }
 
   let(:file_path) { Rails.root.join("spec/fixtures/files/sample.jpeg") }
 
@@ -23,6 +23,6 @@ RSpec.describe "Events images validation", type: :request do
 
     post events_path, params: params
 
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
   end
 end
