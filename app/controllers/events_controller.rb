@@ -33,7 +33,7 @@ class EventsController < ApplicationController
   end
 
   def create
-    @shop = current_user.shops.find_by(id: event_params[:shop_id])
+    @shop = current_user.shops.visible.find_by(id: event_params[:shop_id])
 
     unless @shop
       flash.now[:alert] = "不正な店舗が指定されました。"
@@ -115,7 +115,7 @@ class EventsController < ApplicationController
   def set_event; @event = Event.includes(:shop, :pro_players, images_attachments: :blob).find(params[:id]); end
 
   def require_shop_owner
-    unless current_user&.shop_owner?
+    unless current_user.shops.visible.exists?
       redirect_to new_shop_path, alert: "イベント投稿には店舗登録が必要です。先に店舗を登録してください。"
     end
   end
@@ -123,13 +123,13 @@ class EventsController < ApplicationController
   def set_shop_for_event
     return if action_name.in?(%w[edit update])
 
-    if current_user.shops.empty?
+    if current_user.shops.visible.empty?
       redirect_to new_shop_path, alert: "まず店舗を登録してください。"
     end
   end
 
   def set_owned_shops
-    @owned_shops = current_user.shops.order(:name)
+    @owned_shops = current_user.shops.visible.order(:name)
   end
 
   def authorize_event_owner!
