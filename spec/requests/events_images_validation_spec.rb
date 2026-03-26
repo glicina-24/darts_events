@@ -23,6 +23,6 @@ RSpec.describe "Events images validation", type: :request do
 
     post events_path, params: params
 
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
   end
 end
