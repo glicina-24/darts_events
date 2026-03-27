@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Events create permission", type: :request do
   let(:user) { create(:user) }
+  let(:alert_message) { "イベント投稿には店舗登録が必要です。先に店舗を登録してください。" }
 
   def event_params(shop_id:)
     {
@@ -14,68 +15,84 @@ RSpec.describe "Events create permission", type: :request do
     }
   end
 
+  before { sign_in user }
+
   describe "GET /events/new" do
-    it "approved店舗があるユーザーは表示できる" do
-      create(:shop, user: user, shop_status: :approved)
-      sign_in user
+    context "approved店舗があるとき" do
+      before do
+        create(:shop, user: user, shop_status: :approved)
+      end
 
-      get new_event_path
-
-      expect(response).to have_http_status(:ok)
+      it "表示できる" do
+        get new_event_path
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it "pending店舗しかないユーザーは表示できない" do
-      create(:shop, user: user, shop_status: :pending)
-      sign_in user
+    context "pending店舗しかないとき" do
+      before do
+        create(:shop, user: user, shop_status: :pending)
+      end
 
-      get new_event_path
-
-      expect(response).to redirect_to(new_shop_path)
+      it "リダイレクトされ、alertが表示される" do
+        get new_event_path
+        expect(response).to redirect_to(new_shop_path)
+        expect(flash[:alert]).to eq(alert_message)
+      end
     end
 
-    it "rejected店舗しかないユーザーは表示できない" do
-      create(:shop, user: user, shop_status: :rejected)
-      sign_in user
+    context "rejected店舗しかないとき" do
+      before do
+        create(:shop, user: user, shop_status: :rejected)
+      end
 
-      get new_event_path
-
-      expect(response).to redirect_to(new_shop_path)
+      it "リダイレクトされ、alertが表示される" do
+        get new_event_path
+        expect(response).to redirect_to(new_shop_path)
+        expect(flash[:alert]).to eq(alert_message)
+      end
     end
   end
 
   describe "POST /events" do
-    it "approved店舗なら作成できる" do
-      approved_shop = create(:shop, user: user, shop_status: :approved)
-      sign_in user
+    context "approved店舗があるとき" do
+      let!(:approved_shop) { create(:shop, user: user, shop_status: :approved) }
 
-      expect {
-        post events_path, params: event_params(shop_id: approved_shop.id)
-      }.to change(Event, :count).by(1)
+      it "イベントを作成して詳細へリダイレクトする" do
+        expect {
+          post events_path, params: event_params(shop_id: approved_shop.id)
+        }.to change(Event, :count).by(1)
 
-      expect(response).to have_http_status(:found)
-      expect(Event.last.shop).to eq(approved_shop)
+        event = Event.order(:id).last
+        expect(response).to redirect_to(event_path(event))
+        expect(event.shop).to eq(approved_shop)
+      end
     end
 
-    it "pending店舗しかないユーザーは作成できない" do
-      pending_shop = create(:shop, user: user, shop_status: :pending)
-      sign_in user
+    context "pending店舗しかないとき" do
+      let!(:pending_shop) { create(:shop, user: user, shop_status: :pending) }
 
-      expect {
-        post events_path, params: event_params(shop_id: pending_shop.id)
-      }.not_to change(Event, :count)
+      it "作成できずリダイレクトされる" do
+        expect {
+          post events_path, params: event_params(shop_id: pending_shop.id)
+        }.not_to change(Event, :count)
 
-      expect(response).to redirect_to(new_shop_path)
+        expect(response).to redirect_to(new_shop_path)
+        expect(flash[:alert]).to eq(alert_message)
+      end
     end
 
-    it "rejected店舗しかないユーザーは作成できない" do
-      rejected_shop = create(:shop, user: user, shop_status: :rejected)
-      sign_in user
+    context "rejected店舗しかないとき" do
+      let!(:rejected_shop) { create(:shop, user: user, shop_status: :rejected) }
 
-      expect {
-        post events_path, params: event_params(shop_id: rejected_shop.id)
-      }.not_to change(Event, :count)
+      it "作成できずリダイレクトされる" do
+        expect {
+          post events_path, params: event_params(shop_id: rejected_shop.id)
+        }.not_to change(Event, :count)
 
-      expect(response).to redirect_to(new_shop_path)
+        expect(response).to redirect_to(new_shop_path)
+        expect(flash[:alert]).to eq(alert_message)
+      end
     end
   end
 end
