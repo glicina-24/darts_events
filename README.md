@@ -140,6 +140,12 @@ Figma: <https://www.figma.com/design/1gMjHohHXT7aGgkNVTZqO4/DartsEvents?node-id=
 - `email_deliveries`: メール送信履歴（重複送信防止キーあり）
 - `active_storage_*`: 画像メタデータ管理
 
+### event_participants の運用方針（設計メモ）
+
+- テーブル自体は汎用の中間テーブルとして維持します（将来的な一般参加者対応を想定）。
+- 現時点の機能では `pro_player_ids` のみを扱い、実運用上は「参加予定プロ」用途です。
+- 将来、一般参加者を扱う際は `event_participants` に role（例: `pro` / `general`）を追加して拡張する方針です。
+
 ## 環境変数（主なもの）
 
 ### 認証
