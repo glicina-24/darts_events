@@ -15,7 +15,10 @@
   </p>
 <% end %>
 
-<%= form_with model: event, local: true do |f| %>
+<% form_url = event.persisted? ? event_path(event) : confirm_events_path %>
+<% form_data = event.persisted? ? {} : { turbo: false } %>
+
+<%= form_with model: event, url: form_url, local: true, data: form_data do |f| %>
   <div class="space-y-4">
 
     <div>
@@ -144,7 +147,8 @@
       <%= f.label :images, "イベント画像（複数枚OK）", class: "block text-sm font-medium text-slate-700" %>
       <%= f.file_field :images,
             multiple: true,
-            accept: "image/*",
+            accept: "image/png,image/jpeg,image/webp",
+            direct_upload: true,
             class: "block w-full text-sm text-slate-700" %>
 
       <% if event.persisted? && event.images.attached? %>
@@ -170,7 +174,7 @@
     </div>
 
     <div class="pt-2">
-      <%= f.submit event.persisted? ? "イベントを更新する" : "イベントを公開する",
+      <%= f.submit event.persisted? ? "イベントを更新する" : "確認画面へ",
             class: "w-full inline-flex justify-center items-center rounded-md bg-black 
                   px-4 py-2 text-sm font-semibold text-white shadow-sm 
                   hover:bg-slate-800 focus:outline-none focus:ring-2 

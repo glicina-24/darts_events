@@ -1,0 +1,158 @@
+<div class="min-h-screen bg-slate-50">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-center text-3xl font-bold mb-2">投稿内容を確認する</h1>
+
+    <div class="mb-4 flex items-center justify-between">
+      <button type="button"
+              onclick="history.back()"
+              class="text-xs text-sky-600 hover:underline">
+        ← 入力に戻る
+      </button>
+      <p class="text-xs text-slate-500">内容を確認して投稿してください</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
+      <div class="mb-3">
+        <div class="flex items-start justify-between gap-3">
+          <h1 class="min-w-0 text-2xl sm:text-3xl font-bold wrap-break-word">
+            <%= @event.title %>
+          </h1>
+        </div>
+
+        <div class="mt-2 flex items-center justify-between gap-3">
+          <p class="min-w-0 text-sm text-slate-500">
+            主催：<strong><%= @event.shop&.name.presence || "未選択" %></strong>
+            <span class="ml-2 inline-flex w-fit shrink-0 items-center rounded-full px-2.5 py-1 text-xs font-semibold bg-amber-100 text-amber-700">
+              確認中
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <% if @image_blobs.present? %>
+        <section class="mb-6">
+          <div class="w-full mb-3">
+            <% main_image = @image_blobs.first %>
+
+            <div class="aspect-video w-full overflow-hidden rounded-xl bg-slate-100">
+              <% if main_image.present? && main_image.variable? %>
+                <%= image_tag main_image.variant(resize_to_fill: [1200, 675]),
+                      class: "w-full h-full object-cover" %>
+              <% elsif main_image.present? %>
+                <%= image_tag main_image, class: "w-full h-full object-cover" %>
+              <% else %>
+                <div class="flex h-full items-center justify-center text-sm text-slate-500">
+                  画像なし
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <% if @image_blobs.size > 1 %>
+            <div class="flex flex-wrap gap-2">
+              <% @image_blobs.drop(1).each do |blob| %>
+                <%= image_tag blob.variant(resize_to_fill: [240, 150]),
+                      class: "w-40 h-24 rounded-lg object-cover border" %>
+              <% end %>
+            </div>
+          <% end %>
+        </section>
+      <% end %>
+
+      <% full_address = [@event.prefecture, @event.city, @event.address].reject(&:blank?).join %>
+
+      <div class="mb-6 text-sm text-slate-700 space-y-2">
+        <% if full_address.present? %>
+          <p>
+            <span class="text-xs text-slate-400 mr-2">住所</span>
+            <%= full_address %>
+          </p>
+        <% end %>
+      </div>
+
+      <% if full_address.present? %>
+        <div class="mt-4 mb-6">
+          <div class="aspect-video w-full overflow-hidden rounded-xl border bg-slate-100 max-h-56">
+            <iframe
+              class="w-full h-full"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps?q=<%= ERB::Util.url_encode(full_address) %>&z=17&output=embed">
+            </iframe>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-sm text-slate-700">
+        <div>
+          <p class="text-xs text-slate-400 mb-1">開始日時</p>
+          <p><%= @event.start_datetime.present? ? l(@event.start_datetime, format: :long) : "未設定" %></p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">終了日時</p>
+          <p><%= @event.end_datetime.present? ? l(@event.end_datetime, format: :long) : "未設定" %></p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">参加費</p>
+          <p><%= @event.fee.present? ? "#{number_with_delimiter(@event.fee)} 円" : "未設定" %></p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">定員</p>
+          <p><%= @event.capacity.present? ? "#{@event.capacity} 人" : "制限なし" %></p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">申し込み締切</p>
+          <p><%= @event.entry_deadline.present? ? l(@event.entry_deadline, format: :long) : "設定なし" %></p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 mb-1">参加予定プレイヤー</p>
+          <p><%= @event.pro_players_display %></p>
+        </div>
+      </div>
+
+      <% if @event.description.present? %>
+        <div class="border-t pt-4 mt-4">
+          <h2 class="text-sm font-semibold text-slate-700 mb-2">イベント詳細</h2>
+          <div class="text-sm text-slate-700 whitespace-pre-wrap">
+            <%= @event.description %>
+          </div>
+        </div>
+      <% end %>
+
+      <%= form_with model: @event, url: events_path, local: true, class: "mt-8" do |f| %>
+        <%= hidden_field_tag "event[shop_id]", @event.shop_id %>
+        <%= hidden_field_tag "event[title]", @event.title %>
+        <%= hidden_field_tag "event[description]", @event.description %>
+        <%= hidden_field_tag "event[start_datetime]", @event.start_datetime %>
+        <%= hidden_field_tag "event[end_datetime]", @event.end_datetime %>
+        <%= hidden_field_tag "event[address]", @event.address %>
+        <%= hidden_field_tag "event[prefecture]", @event.prefecture %>
+        <%= hidden_field_tag "event[city]", @event.city %>
+        <%= hidden_field_tag "event[latitude]", @event.latitude %>
+        <%= hidden_field_tag "event[longitude]", @event.longitude %>
+        <%= hidden_field_tag "event[fee]", @event.fee %>
+        <%= hidden_field_tag "event[capacity]", @event.capacity %>
+        <%= hidden_field_tag "event[entry_deadline]", @event.entry_deadline %>
+
+        <% @event.pro_player_ids.each do |pro_player_id| %>
+          <%= hidden_field_tag "event[pro_player_ids][]", pro_player_id %>
+        <% end %>
+
+        <% Array(@image_blobs).each do |blob| %>
+          <%= hidden_field_tag "event[image_signed_ids][]", blob.signed_id %>
+        <% end %>
+
+        <%= f.submit "この内容で投稿する",
+              class: "w-full inline-flex justify-center items-center rounded-md bg-black
+                    px-4 py-2 text-sm font-semibold text-white shadow-sm
+                    hover:bg-slate-800 focus:outline-none focus:ring-2
+                    focus:ring-slate-500 focus:ring-offset-2" %>
+      <% end %>
+    </div>
+  </div>
+</div>
