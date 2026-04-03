@@ -33,7 +33,7 @@ class EventsController < ApplicationController
   end
 
   def confirm
-    if request.get?
+    unless request.post?
       # 投稿完了後にブラウザバックで confirm へ戻った場合の退避先。
       # TODO: マイページの投稿一覧実装後は、root_path から投稿一覧への導線に置き換える。
       redirect_to root_path, alert: "投稿済みのイベントです。"
@@ -82,10 +82,13 @@ class EventsController < ApplicationController
     # confirm画面経由の hidden(image_signed_ids) を優先。
     # 直接POSTされた場合は direct_upload側(images) も拾えるようにする。
     signed_ids = image_signed_ids.presence || direct_upload_image_signed_ids
+    uploaded_files = uploaded_images
+
     @event, blobs = build_event_for_confirm_or_create(shop: @shop, signed_ids: signed_ids)
 
     ActiveRecord::Base.transaction do
       @event.images.attach(blobs) if blobs.any?
+      @event.images.attach(uploaded_files) if uploaded_files.any?
       @event.save!
       create_new_event_notifications!(@event)
     end
@@ -210,7 +213,17 @@ class EventsController < ApplicationController
   end
 
   def direct_upload_image_signed_ids
-    Array(event_params[:images]).reject(&:blank?)
+    Array(event_params[:images]).filter_map do |value|
+      value if value.is_a?(String) && value.present?
+    end
+  end
+
+  def uploaded_images
+    Array(event_params[:images]).select do |value|
+      value.respond_to?(:tempfile) &&
+        value.respond_to?(:original_filename) &&
+        value.respond_to?(:content_type)
+    end
   end
 
   def pro_player_ids
