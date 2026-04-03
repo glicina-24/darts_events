@@ -13,9 +13,7 @@ Rails.application.routes.draw do
     resource :favorite, only: %i[create destroy]
   end
 
-  resources :users, only: %i[index] do
-    concerns :favoritable
-
+  resources :users, only: %i[index], concerns: [ :favoritable ] do
     collection do
       get :pro_suggestions
     end
@@ -23,6 +21,10 @@ Rails.application.routes.draw do
 
   resources :events, concerns: [ :favoritable ] do
     delete "images/:image_id", to: "events#destroy_image", as: :image, on: :member
+    collection do
+      get :confirm
+      post :confirm
+    end
   end
 
   resources :shops, concerns: [ :favoritable ] do

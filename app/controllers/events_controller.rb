@@ -1,10 +1,10 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
   before_action :set_event, only: %i[show edit update destroy]
-  before_action :require_shop_owner, only: %i[new create]
-  before_action :set_shop_for_event, only: %i[new create]
+  before_action :require_shop_owner, only: %i[new confirm create]
+  before_action :set_shop_for_event, only: %i[new confirm create]
   before_action :authorize_event_owner!, only: %i[edit update destroy]
-  before_action :set_owned_shops, only: %i[new create edit update]
+  before_action :set_owned_shops, only: %i[new confirm create edit update]
 
   def index
     @q = Event.ransack(params[:q])
@@ -32,23 +32,64 @@ class EventsController < ApplicationController
     @event = Event.new
   end
 
+  def confirm
+    unless request.post?
+      # 投稿完了後にブラウザバックで confirm へ戻った場合の退避先。
+      # TODO: マイページの投稿一覧実装後は、root_path から投稿一覧への導線に置き換える。
+      redirect_to root_path, alert: "投稿済みのイベントです。"
+      return
+    end
+
+    @shop = current_user.shops.visible.find_by(id: event_params[:shop_id])
+
+    unless @shop
+      flash.now[:alert] = "不正な店舗が指定されました。"
+      @event = build_event_without_shop
+      render :new, status: :unprocessable_content
+      return
+    end
+
+    @event, @image_blobs = build_event_for_confirm_or_create(
+      shop: @shop, signed_ids: direct_upload_image_signed_ids
+    )
+
+    allowed_types = %w[image/jpeg image/png image/webp]
+
+    if @image_blobs.any? { |blob| !allowed_types.include?(blob.content_type) }
+      @event.errors.add(:images, "はJPEG / PNG / WEBPのみアップロードできます")
+      render :new, status: :unprocessable_content
+      return
+    end
+
+    if @event.valid?
+      render :confirm
+    else
+      render :new, status: :unprocessable_content
+    end
+  end
+
   def create
     @shop = current_user.shops.visible.find_by(id: event_params[:shop_id])
 
     unless @shop
       flash.now[:alert] = "不正な店舗が指定されました。"
-      @event = Event.new(event_params)
+      @event = build_event_without_shop
+
       render :new, status: :unprocessable_entity
       return
     end
 
-    @event = @shop.events.build(event_params.except(:pro_player_ids, :images))
+    # confirm画面経由の hidden(image_signed_ids) を優先。
+    # 直接POSTされた場合は direct_upload側(images) も拾えるようにする。
+    signed_ids = image_signed_ids.presence || direct_upload_image_signed_ids
+    uploaded_files = uploaded_images
+
+    @event, blobs = build_event_for_confirm_or_create(shop: @shop, signed_ids: signed_ids)
 
     ActiveRecord::Base.transaction do
-      @event.images.attach(event_params[:images]) if event_params[:images].present?
-
+      @event.images.attach(blobs) if blobs.any?
+      @event.images.attach(uploaded_files) if uploaded_files.any?
       @event.save!
-      @event.pro_players = User.where(id: pro_player_ids)
       create_new_event_notifications!(@event)
     end
 
@@ -57,7 +98,7 @@ class EventsController < ApplicationController
     redirect_to @event, notice: "イベントを投稿しました。"
   rescue ActiveRecord::RecordInvalid
     flash.now[:alert] = "イベントの投稿に失敗しました。入力内容を確認してください。"
-    render :new, status: :unprocessable_entity
+    render :new, status: :unprocessable_content
   end
 
   def edit
@@ -108,7 +149,8 @@ class EventsController < ApplicationController
       :capacity,
       :entry_deadline,
       pro_player_ids: [],
-      images: []
+      images: [],
+      image_signed_ids: []
     )
   end
 
@@ -170,7 +212,46 @@ class EventsController < ApplicationController
     Notification.insert_all!(rows) if rows.any?
   end
 
+  def direct_upload_image_signed_ids
+    Array(event_params[:images]).filter_map do |value|
+      value if value.is_a?(String) && value.present?
+    end
+  end
+
+  def uploaded_images
+    Array(event_params[:images]).select do |value|
+      value.respond_to?(:tempfile) &&
+        value.respond_to?(:original_filename) &&
+        value.respond_to?(:content_type)
+    end
+  end
+
   def pro_player_ids
     Array(event_params[:pro_player_ids]).reject(&:blank?)
+  end
+
+  def image_signed_ids
+    Array(event_params[:image_signed_ids]).reject(&:blank?)
+  end
+
+  def base_event_attributes
+    event_params.except(:pro_player_ids, :images, :image_signed_ids)
+  end
+
+  def build_event_without_shop
+    event = Event.new(base_event_attributes)
+    event.pro_players = User.where(id: pro_player_ids)
+    event
+  end
+
+  def build_event_for_confirm_or_create(shop:, signed_ids:)
+    event = shop.events.build(base_event_attributes)
+    event.pro_players = User.where(id: pro_player_ids)
+
+    blobs = Array(signed_ids).reject(&:blank?).filter_map do |sid|
+      ActiveStorage::Blob.find_signed(sid)
+    end
+
+    [ event, blobs ]
   end
 end
