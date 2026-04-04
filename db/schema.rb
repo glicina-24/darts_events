@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_13_231909) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_04_225345) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -117,6 +117,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_13_231909) do
     t.index ["recipient_id"], name: "index_notifications_on_recipient_id"
   end
 
+  create_table "push_subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "endpoint", null: false
+    t.string "p256dh", null: false
+    t.string "auth", null: false
+    t.datetime "expiration_time"
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["endpoint"], name: "index_push_subscriptions_on_endpoint", unique: true
+    t.index ["user_id"], name: "index_push_subscriptions_on_user_id"
+  end
+
   create_table "shops", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -184,5 +197,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_13_231909) do
   add_foreign_key "favorites", "users"
   add_foreign_key "notifications", "users", column: "actor_id"
   add_foreign_key "notifications", "users", column: "recipient_id"
+  add_foreign_key "push_subscriptions", "users"
   add_foreign_key "shops", "users"
 end
