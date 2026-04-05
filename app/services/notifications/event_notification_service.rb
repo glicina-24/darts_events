@@ -11,7 +11,7 @@ module Notifications
     def notify_event_created!
       recipients = recipients_with_reason_for_event_created
 
-      # recipients（送信対象）を先に集計し、Userは一括取得してN+1を避ける
+      # メール通知, recipients（送信対象）を先に集計し、Userは一括取得してN+1を避ける
       users_by_id = User.where(id: recipients.keys).index_by(&:id)
 
       recipients.each do |user_id, notification_context|
@@ -20,6 +20,9 @@ module Notifications
 
         event_created!(recipient, notification_context)
       end
+
+      # Push通知
+      enqueue_push_notifications(recipients.keys)
     end
 
     def recipients_with_reason_for_event_created
@@ -99,6 +102,30 @@ module Notifications
 
     def base_context
       { reasons: [], pro_names: [], shop_name: event.shop.name }
+    end
+
+    def enqueue_push_notifications(user_ids)
+      ids = Array(user_ids).uniq
+      return if ids.blank?
+
+      PushNotifications::FanoutService.call(
+        user_ids: ids,
+        payload: build_push_payload
+      )
+    rescue => e
+      Rails.logger.error(
+        "[push] enqueue failed event_id=#{event.id} user_ids=#{user_ids.join(',')} #{e.class} #{e.message}"
+      )
+      Sentry.capture_exception(e) if defined?(Sentry)
+    end
+
+    def build_push_payload
+      {
+        title: "新しいイベントが投稿されました",
+        body: "#{event.shop.name} / #{event.title}",
+        url: Rails.application.routes.url_helpers.event_path(event),
+        tag: "event-#{event.id}"
+      }
     end
   end
 end
