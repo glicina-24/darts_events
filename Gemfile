@@ -14,7 +14,7 @@ gem "turbo-rails"
 gem "stimulus-rails"
 gem "jbuilder"
 gem "sassc-rails"
-gem "webpush"
+gem "web-push"
 
 
 # Auth

@@ -10,7 +10,7 @@ module PushNotifications
     end
 
     def call
-      Webpush.payload_send(
+      WebPush.payload_send(
         message: payload.to_json,
         endpoint: subscription.endpoint,
         p256dh: subscription.p256dh,
@@ -22,10 +22,10 @@ module PushNotifications
         }
       )
       :ok
-    rescue Webpush::ExpiredSubscription, Webpush::InvalidSubscription
+    rescue WebPush::ExpiredSubscription, WebPush::InvalidSubscription
       subscription.destroy!
       :stale_deleted
-    rescue Webpush::ResponseError => e
+    rescue WebPush::ResponseError => e
       # gemバージョン差があるので status 取得は実ログで確認して調整
       status = e.respond_to?(:response) ? e.response&.status.to_i : nil
       if [ 404, 410 ].include?(status)
