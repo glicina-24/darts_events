@@ -18,6 +18,9 @@
     <meta name="twitter:image" content="<%= "#{request.base_url}/ogp.png" %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <% if Rails.configuration.x.webpush.public_key.present? %>
+      <meta name="vapid-public-key" content="<%= Rails.configuration.x.webpush.public_key %>">
+    <% end %>
 
     <%= yield :head %>
 
@@ -29,7 +32,7 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body class="min-h-screen flex flex-col">
+  <body class="min-h-screen flex flex-col" data-signed-in="<%= user_signed_in? %>">
     <%= render "shared/header" unless @disable_header %>
     <% unless @disable_flash %>
       <%= render "shared/flash" %>
