@@ -14,6 +14,8 @@ gem "turbo-rails"
 gem "stimulus-rails"
 gem "jbuilder"
 gem "sassc-rails"
+gem "webpush"
+
 
 # Auth
 gem "bcrypt", "~> 3.1.7"
