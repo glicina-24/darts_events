@@ -45,7 +45,7 @@
       <div class="flex items-start gap-2">
         <span class="text-base mt-0.5 shrink-0">📍</span>
         <span class="text-sm text-slate-700 font-medium leading-snug">
-          <%= event.prefecture.presence || event.shop&.prefecture.presence || "未設定" %>
+          <%= event.shop&.address.to_s.strip.presence || "未設定" %>
         </span>
       </div>
     </div>

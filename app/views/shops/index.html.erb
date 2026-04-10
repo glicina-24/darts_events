@@ -26,12 +26,10 @@
             </div>
             <%= link_to shop_path(shop),
                   class: "block bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition" do %>
+              <% full_address = shop.address.to_s.strip %>
               <p class="text-sm font-semibold mb-1"><%= shop.name %></p>
-              <p class="text-xs text-slate-500 mb-1">
-                <%= [shop.prefecture, shop.city].compact.join %>
-              </p>
               <p class="text-xs text-slate-500">
-                <%= shop.address %>
+                <%= full_address.presence || "住所未設定" %>
               </p>
             <% end %>
           </div>

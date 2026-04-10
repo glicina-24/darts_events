@@ -115,9 +115,10 @@
 
               <div class="p-4">
                 <%= link_to shop_path(shop), class: "block" do %>
+                  <% full_address = shop.address.to_s.strip %>
                   <p class="text-sm font-semibold line-clamp-2 group-hover:underline"><%= shop.name %></p>
                   <div class="mt-2 text-xs text-slate-600 space-y-1">
-                    <p>📍 <%= [shop.prefecture, shop.city].compact.join %></p>
+                    <p>📍 <%= full_address.presence || "住所未設定" %></p>
                     <p class="text-slate-500">登録者: <%= shop.user&.name %></p>
                   </div>
                 <% end %>
