@@ -48,15 +48,17 @@
           <% end %>
         </div>
 
+        <% full_address = @shop.address.to_s.strip %>
+
         <div class="space-y-2 text-sm text-slate-700 mb-4">
           <% if @shop.postal_code.present? %>
             <p><span class="font-medium">郵便番号：</span><%= @shop.postal_code %></p>
           <% end %>
 
-          <% if @shop.prefecture.present? || @shop.city.present? || @shop.address.present? %>
+          <% if full_address.present? %>
             <p>
               <span class="font-medium">住所：</span>
-              <%= [@shop.prefecture, @shop.city, @shop.address].compact.join %>
+              <%= full_address %>
             </p>
           <% end %>
 

@@ -59,7 +59,7 @@
         </section>
       <% end %>
 
-      <% full_address = [@event.prefecture, @event.city, @event.address].reject(&:blank?).join %>
+      <% full_address = @event.shop&.address.to_s.strip %>
 
       <div class="mb-6 text-sm text-slate-700 space-y-2">
         <% if full_address.present? %>
