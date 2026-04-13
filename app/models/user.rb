@@ -15,6 +15,8 @@ class User < ApplicationRecord
             foreign_key: :recipient_id,
             dependent: :destroy
 
+  has_many :push_subscriptions, dependent: :destroy
+
   enum :pro_player_status, { unapplied: 0, pending: 1, approved: 2, rejected: 3 }, default: :unapplied
 
   validates :pro_sns_url, presence: true, if: -> { pro_player_status == "pending" }
