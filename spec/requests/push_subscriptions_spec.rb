@@ -28,10 +28,10 @@ RSpec.describe "Push subscriptions", type: :request do
     let(:params) do
       {
         push_subscription: {
-        endpoint:"https://example.push.endpoint/abc",
-        p256dh: "p256dh_key",
-        auth: "auth_key",
-        user_agent: "RSpec"
+          endpoint: "https://example.push.endpoint/abc",
+          p256dh: "p256dh_key",
+          auth: "auth_key",
+          user_agent: "RSpec"
         }
       }
     end
@@ -53,6 +53,28 @@ RSpec.describe "Push subscriptions", type: :request do
       }.not_to change(PushSubscription, :count)
 
       expect(response).to have_http_status(:ok)
+    end
+
+    it "他ユーザーが所有するendpointを再登録すると409を返し、所有者を変えない" do
+      other_user = create(:user)
+      existing = create(
+        :push_subscription,
+        user: other_user,
+        endpoint: params[:push_subscription][:endpoint],
+        p256dh: "old_p256dh",
+        auth: "old_auth"
+      )
+
+      expect {
+        post push_subscription_path, params: params
+      }.not_to change(PushSubscription, :count)
+
+      expect(response).to have_http_status(:conflict)
+
+      existing.reload
+      expect(existing.user).to eq(other_user)
+      expect(existing.p256dh).to eq("old_p256dh")
+      expect(existing.auth).to eq("old_auth")
     end
   end
 

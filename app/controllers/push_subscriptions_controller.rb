@@ -2,13 +2,23 @@ class PushSubscriptionsController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    subscription = PushSubscription.find_or_initialize_by(endpoint: push_subscription_params[:endpoint])
-    subscription.user = current_user
-    subscription.assign_attributes(push_subscription_params.except(:endpoint))
+    subscription = PushSubscription.find_by(endpoint: push_subscription_params[:endpoint])
 
-    if subscription.save
-      status = subscription.previously_new_record? ? :created : :ok
-      render json: { id: subscription.id }, status: status
+    if subscription.nil?
+      new_subscription = current_user.push_subscriptions.build(push_subscription_params)
+      if new_subscription.save
+        return render json: { id: new_subscription.id }, status: :created
+      end
+
+      return render json: { errors: new_subscription.errors.full_messages }, status: :unprocessable_content
+    end
+
+    if subscription.user_id != current_user.id
+      return render json: { errors: [ "endpoint is already registered by another user" ] }, status: :conflict
+    end
+
+    if subscription.update(push_subscription_params.except(:endpoint))
+      render json: { id: subscription.id }, status: :ok
     else
       render json: { errors: subscription.errors.full_messages }, status: :unprocessable_content
     end
