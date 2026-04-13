@@ -33,7 +33,7 @@ RSpec.describe Notifications::EventNotificationService, type: :service do
       allow(service).to receive(:event_created!).and_return(:sent)
 
       expect(PushNotifications::FanoutService).to receive(:call).with(
-        user_ids: [recipient.id],
+        user_ids: [ recipient.id ],
         payload: hash_including(
           title: "新しいイベントが投稿されました",
           body: "#{shop.name} / #{event.title}",
